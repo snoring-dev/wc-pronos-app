@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Center,
   Heading,
@@ -14,6 +14,20 @@ import { Pages, RootStackParamList } from "../../utils/Pages";
 type Props = NativeStackScreenProps<RootStackParamList>;
 
 const Register = ({ navigation }: Props) => {
+  const [user, setUser] = useState({
+    username: "",
+    password: "",
+    email: "",
+  });
+
+  const handleInputVal = (field: string, value: string) => {
+    setUser(current => ({ ...user, [field]: value }));
+  }
+
+  const submitUser = () => {
+    console.log('USER:', user);
+  }
+
   return (
     <Center w="100%">
       <Box safeArea p="2" w="90%" maxW="290" py="8">
@@ -40,21 +54,21 @@ const Register = ({ navigation }: Props) => {
         </Heading>
         <VStack space={3} mt="5">
           <FormControl>
+            <FormControl.Label>Username</FormControl.Label>
+            <Input type="text" isRequired onChangeText={text => handleInputVal('username', text)}/>
+          </FormControl>
+          <FormControl>
             <FormControl.Label>Email</FormControl.Label>
-            <Input />
+            <Input type="text" isRequired onChangeText={text => handleInputVal('email', text)} />
           </FormControl>
           <FormControl>
             <FormControl.Label>Password</FormControl.Label>
-            <Input type="password" />
-          </FormControl>
-          <FormControl>
-            <FormControl.Label>Confirm Password</FormControl.Label>
-            <Input type="password" />
+            <Input type="password" isRequired onChangeText={text => handleInputVal('password', text)} />
           </FormControl>
           <Button
             mt="2"
             colorScheme="indigo"
-            onPress={() => navigation.navigate(Pages.Login)}
+            onPress={submitUser}
           >
             Sign up
           </Button>

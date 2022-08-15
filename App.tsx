@@ -1,10 +1,14 @@
 import React from "react";
+import { Provider as AppStoreProvider } from "react-redux";
+import { Store } from "redux";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NativeBaseProvider, extendTheme } from "native-base";
-import { Login } from "./screens/Login";
-import { Register } from "./screens/Register";
+import Login from "./screens/Login";
+import Register from "./screens/Register";
 import { Pages } from "./utils/Pages";
+import { ApplicationState } from "./store";
+import { configureStore } from "./store/configureStore";
 
 const Stack = createNativeStackNavigator();
 
@@ -22,14 +26,17 @@ declare module "native-base" {
 }
 
 export default function App() {
+  const globalStore: Store<ApplicationState> = configureStore();
   return (
-    <NativeBaseProvider>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name={Pages.Register} component={Register} />
-          <Stack.Screen name={Pages.Login} component={Login} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </NativeBaseProvider>
+    <AppStoreProvider store={globalStore}>
+      <NativeBaseProvider>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen name={Pages.Register} component={Register} />
+            <Stack.Screen name={Pages.Login} component={Login} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </NativeBaseProvider>
+    </AppStoreProvider>
   );
 }

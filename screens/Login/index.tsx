@@ -99,4 +99,4 @@ const Login = ({ navigation }: Props) => {
   );
 };
 
-export { Login };
+export default Login;

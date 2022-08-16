@@ -42,6 +42,11 @@ function reducer(state: RegistrationState = initialState, action: AnyAction) {
             },
         };
     }
+    case RegistrationActionTypes.USER_REGISTRATION_CLEAR: {
+      return {
+        ...initialState,
+      };
+    }
     default: {
       return state;
     }

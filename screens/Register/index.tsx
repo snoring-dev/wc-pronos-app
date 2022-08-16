@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import * as SecureStore from "expo-secure-store";
 import {
   Center,
   Heading,
@@ -14,9 +15,17 @@ import { connect } from "react-redux";
 import { RegistrationData } from "../../store/Registration/types";
 import { Dispatch } from "redux";
 import { ApplicationState } from "../../store";
-import { setUserData } from "../../store/Registration/actions";
+import {
+  clearRegistration,
+  setRegistrationFailed,
+  setRegistrationSuccess,
+  setUserData,
+} from "../../store/Registration/actions";
 import { AlertMessage } from "../../components/AlertMessage";
 import { FailureState } from "../../types";
+import { saveUser } from "../../store/Registration/services";
+import { Constants } from "../../utils/Constants";
+import { setAuthenticatedUser } from "../../store/Auth/actions";
 
 interface RegisterProps {
   savedData: RegistrationData;
@@ -79,7 +88,7 @@ const Register = ({
             <AlertMessage
               status="error"
               title="Somthing went wrong!"
-              message={error?.message ?? ''}
+              message={error?.message ?? ""}
             />
           )}
           <FormControl>
@@ -128,8 +137,26 @@ const mapStateToProps = (state: ApplicationState) => ({
 });
 
 const mappedActions = {
-  createNewUser: (details: RegistrationData) => (dispatch: Dispatch) => {
+  createNewUser: (details: RegistrationData) => async (dispatch: Dispatch) => {
     dispatch(setUserData(details));
+    try {
+      const resp = await saveUser(details);
+      dispatch(setRegistrationSuccess(details));
+      await SecureStore.setItemAsync(
+        Constants.storage.AUTH_TOKEN,
+        resp?.jwt ?? ""
+      );
+      dispatch(clearRegistration());
+      dispatch(setAuthenticatedUser(resp.jwt, resp.user));
+    } catch (e: any) {
+      const { data } = e;
+      dispatch(
+        setRegistrationFailed({
+          status: data?.error?.status ?? 400,
+          message: data?.error?.message ?? "Something went wrong",
+        })
+      );
+    }
   },
 };
 

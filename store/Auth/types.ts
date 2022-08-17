@@ -20,4 +20,6 @@ export interface AuthState {
 
 export enum AuthActionTypes {
     SET_USER_DATA = "@wc-app/auth/SET_USER_DATA",
+    SET_AUTH_FAILED = "@wc-app/auth/SET_AUTH_FAILED",
+    SET_AUTH_LOADING = "@wc-app/auth/SET_AUTH_LOADING",
 }

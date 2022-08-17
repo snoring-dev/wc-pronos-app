@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Text,
   Link,
@@ -13,10 +13,47 @@ import {
 } from "native-base";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Pages, RootStackParamList } from "../../utils/Pages";
+import { connect } from "react-redux";
+import { ApplicationState } from "../../store";
+import { Dispatch } from "redux";
+import { FailureState } from "../../types";
+import { performAuth } from "../../store/Auth/services";
+import {
+  setAuthenticatedUser,
+  setAuthenticationFailed,
+  setAuthLoading,
+} from "../../store/Auth/actions";
+import { saveKey } from "../../utils";
+import { Constants } from "../../utils/Constants";
+import { AlertMessage } from "../../components/AlertMessage";
 
-type Props = NativeStackScreenProps<RootStackParamList>;
+interface Credentials {
+  identifier?: string;
+  password?: string;
+}
 
-const Login = ({ navigation }: Props) => {
+interface LoginComponentProps {
+  isLoading: boolean;
+  error: FailureState;
+  performLogin: any;
+}
+
+type Props = LoginComponentProps & NativeStackScreenProps<RootStackParamList>;
+
+const Login = ({ navigation, isLoading, error, performLogin }: Props) => {
+  const [credentials, setCredentials] = useState({
+    identifier: "",
+    password: "",
+  });
+
+  const handleInputVal = (field: string, value: string) => {
+    setCredentials((current) => ({ ...credentials, [field]: value }));
+  };
+
+  const submitCredentials = () => {
+    performLogin(credentials);
+  };
+
   return (
     <Center w="100%">
       <Box safeArea p="2" py="8" w="90%" maxW="290">
@@ -43,13 +80,28 @@ const Login = ({ navigation }: Props) => {
         </Heading>
 
         <VStack space={3} mt="5">
+          {error?.status !== 200 && (
+            <AlertMessage
+              status="error"
+              title="Somthing went wrong!"
+              message={error?.message ?? ""}
+            />
+          )}
           <FormControl>
             <FormControl.Label>Email ID</FormControl.Label>
-            <Input />
+            <Input
+              type="text"
+              isRequired
+              onChangeText={(val) => handleInputVal("identifier", val)}
+            />
           </FormControl>
           <FormControl>
             <FormControl.Label>Password</FormControl.Label>
-            <Input type="password" />
+            <Input
+              type="password"
+              isRequired
+              onChangeText={(val) => handleInputVal("password", val)}
+            />
             <Link
               _text={{
                 fontSize: "xs",
@@ -65,7 +117,9 @@ const Login = ({ navigation }: Props) => {
           <Button
             mt="2"
             colorScheme="indigo"
-            onPress={() => navigation.navigate(Pages.Register)}
+            onPress={submitCredentials}
+            isLoading={isLoading}
+            isLoadingText="Hold on..."
           >
             Sign in
           </Button>
@@ -87,7 +141,7 @@ const Login = ({ navigation }: Props) => {
               }}
               onPress={(e) => {
                 e?.preventDefault();
-                navigation.navigate(Pages.Register);
+                submitCredentials();
               }}
             >
               Sign Up
@@ -99,4 +153,33 @@ const Login = ({ navigation }: Props) => {
   );
 };
 
-export default Login;
+const mapStateToProps = (state: ApplicationState) => ({
+  isLoading: state?.auth?.isLoading,
+  error: state?.auth?.failure,
+});
+
+const mappedActions = {
+  performLogin: (auth: Credentials) => async (dispatch: Dispatch) => {
+    try {
+      dispatch(setAuthLoading(true));
+      const data = await performAuth(
+        auth?.identifier ?? "",
+        auth?.password ?? ""
+      );
+      dispatch(setAuthenticatedUser(data?.jwt, data?.user));
+      dispatch(setAuthLoading(false));
+      await saveKey(Constants.storage.AUTH_TOKEN, data?.jwt ?? "");
+    } catch (e: any) {
+      const { data } = e;
+      dispatch(setAuthLoading(false));
+      dispatch(
+        setAuthenticationFailed({
+          status: data?.error?.status ?? 400,
+          message: data?.error?.message ?? "Something went wrong",
+        })
+      );
+    }
+  },
+};
+
+export default connect(mapStateToProps, mappedActions)(Login);

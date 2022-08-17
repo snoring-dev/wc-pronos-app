@@ -20,9 +20,14 @@ export const configureStore = (): Store<ApplicationState> => {
       isLoading: false,
     },
     auth: {
-      jwt: '',
+      jwt: "",
       user: null,
-    }
+      failure: {
+        status: 200,
+        message: "",
+      },
+      isLoading: false,
+    },
   };
 
   const middlewares = [thunk];

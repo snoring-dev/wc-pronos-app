@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import * as SecureStore from "expo-secure-store";
 import {
   Center,
   Heading,
@@ -26,6 +25,7 @@ import { FailureState } from "../../types";
 import { saveUser } from "../../store/Registration/services";
 import { Constants } from "../../utils/Constants";
 import { setAuthenticatedUser } from "../../store/Auth/actions";
+import { saveKey } from "../../utils";
 
 interface RegisterProps {
   savedData: RegistrationData;
@@ -54,7 +54,6 @@ const Register = ({
   };
 
   const submitUser = () => {
-    console.log("USER:", user);
     createNewUser(user);
   };
 
@@ -142,7 +141,7 @@ const mappedActions = {
     try {
       const resp = await saveUser(details);
       dispatch(setRegistrationSuccess(details));
-      await SecureStore.setItemAsync(
+      await saveKey(
         Constants.storage.AUTH_TOKEN,
         resp?.jwt ?? ""
       );

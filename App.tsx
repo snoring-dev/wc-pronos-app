@@ -32,8 +32,8 @@ export default function App() {
       <NativeBaseProvider>
         <NavigationContainer>
           <Stack.Navigator>
-            <Stack.Screen name={Pages.Register} component={Register} />
             <Stack.Screen name={Pages.Login} component={Login} />
+            <Stack.Screen name={Pages.Register} component={Register} />
           </Stack.Navigator>
         </NavigationContainer>
       </NativeBaseProvider>

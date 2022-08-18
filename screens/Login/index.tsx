@@ -51,7 +51,9 @@ const Login = ({ navigation, isLoading, error, performLogin }: Props) => {
   };
 
   const submitCredentials = () => {
-    performLogin(credentials);
+    performLogin(credentials, () =>
+      navigation.navigate("Home", { screen: "Profile" })
+    );
   };
 
   return (
@@ -159,7 +161,7 @@ const mapStateToProps = (state: ApplicationState) => ({
 });
 
 const mappedActions = {
-  performLogin: (auth: Credentials) => async (dispatch: Dispatch) => {
+  performLogin: (auth: Credentials, successCallback: Function) => async (dispatch: Dispatch) => {
     try {
       dispatch(setAuthLoading(true));
       const data = await performAuth(
@@ -169,6 +171,7 @@ const mappedActions = {
       dispatch(setAuthenticatedUser(data?.jwt, data?.user));
       dispatch(setAuthLoading(false));
       await saveKey(Constants.storage.AUTH_TOKEN, data?.jwt ?? "");
+      successCallback();
     } catch (e: any) {
       const { data } = e;
       dispatch(setAuthLoading(false));

@@ -9,8 +9,75 @@ import Register from "./screens/Register";
 import { Pages } from "./utils/Pages";
 import { ApplicationState } from "./store";
 import { configureStore } from "./store/configureStore";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import NewsFeed from "./screens/NewsFeed";
+import Matchs from "./screens/Matchs";
+import Profile from "./screens/Profile";
+import Community from "./screens/Community";
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
+function MyTabs() {
+  return (
+    <Tab.Navigator
+      initialRouteName="News"
+      screenOptions={{
+        tabBarActiveTintColor: "#e91e63",
+      }}
+    >
+      <Tab.Screen
+        name="NewsFeed"
+        component={NewsFeed}
+        options={{
+          tabBarLabel: "Home",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="home" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Matchs"
+        component={Matchs}
+        options={{
+          tabBarLabel: "Matchs",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="bell" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Community"
+        component={Community}
+        options={{
+          tabBarLabel: "Community",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="bell" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          tabBarLabel: "Your Profile",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="account" color={color} size={size} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
+
+export function HomeScreen () {
+  return (
+    <>
+      <MyTabs />
+    </>
+  );
+}
 
 // Define the config
 const config = {
@@ -32,8 +99,9 @@ export default function App() {
       <NativeBaseProvider>
         <NavigationContainer>
           <Stack.Navigator>
-            <Stack.Screen name={Pages.Login} component={Login} />
-            <Stack.Screen name={Pages.Register} component={Register} />
+            <Stack.Screen name={Pages.Login} component={Login} options={{ headerShown: false }} />
+            <Stack.Screen name={Pages.Home} component={HomeScreen} options={{ headerShown: false }} />
+            <Stack.Screen name={Pages.Register} component={Register} options={{ headerShown: false }} />
           </Stack.Navigator>
         </NavigationContainer>
       </NativeBaseProvider>

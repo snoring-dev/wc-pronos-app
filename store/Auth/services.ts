@@ -11,3 +11,15 @@ export const performAuth = async (id: string, pwd: string) => {
   });
   return resp;
 };
+
+export const getUserProfile = async (id: string, jwt : string) => {
+  const resp = await request({
+    url: `/users/${id}?populate=deep`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
+  });
+
+  return resp;
+};

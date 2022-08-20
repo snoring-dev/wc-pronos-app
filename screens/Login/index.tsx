@@ -17,15 +17,17 @@ import { connect } from "react-redux";
 import { ApplicationState } from "../../store";
 import { Dispatch } from "redux";
 import { FailureState } from "../../types";
-import { performAuth } from "../../store/Auth/services";
+import { getUserProfile, performAuth } from "../../store/Auth/services";
 import {
   setAuthenticatedUser,
   setAuthenticationFailed,
   setAuthLoading,
+  setProfileData,
 } from "../../store/Auth/actions";
 import { saveKey } from "../../utils";
 import { Constants } from "../../utils/Constants";
 import { AlertMessage } from "../../components/AlertMessage";
+import { User } from "../../store/Auth/types";
 
 interface Credentials {
   identifier?: string;
@@ -169,8 +171,9 @@ const mappedActions = {
         auth?.password ?? ""
       );
       dispatch(setAuthenticatedUser(data?.jwt, data?.user));
-      dispatch(setAuthLoading(false));
       await saveKey(Constants.storage.AUTH_TOKEN, data?.jwt ?? "");
+      const userProfile: User = await getUserProfile(data?.user?.id, data?.jwt);
+      dispatch(setProfileData(userProfile?.profile));
       successCallback();
     } catch (e: any) {
       const { data } = e;

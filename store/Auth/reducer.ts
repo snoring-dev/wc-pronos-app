@@ -23,6 +23,17 @@ function reducer(state: AuthState = initialState, action: AnyAction) {
         isLoading: payload,
       };
     }
+    case AuthActionTypes.SET_PROFILE_DATA: {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          profile: { ...payload },
+        },
+        isLoading: false,
+        failure: { status: 200, message: "OK" },
+      };
+    }
     case AuthActionTypes.SET_AUTH_FAILED: {
       return {
         ...state,

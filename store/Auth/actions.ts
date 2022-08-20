@@ -1,5 +1,5 @@
 import { FailureState } from "../../types";
-import { AuthActionTypes, User } from "./types";
+import { AuthActionTypes, Profile, User } from "./types";
 
 export const setAuthenticatedUser = (jwt: string, user: User) => {
   return {
@@ -13,6 +13,13 @@ export const setAuthLoading = (value: boolean) => {
         type: AuthActionTypes.SET_AUTH_LOADING,
         payload: value,
     };
+}
+
+export const setProfileData = (profile: Profile) => {
+  return {
+      type: AuthActionTypes.SET_PROFILE_DATA,
+      payload: profile,
+  };
 }
 
 export const setAuthenticationFailed = (failure: FailureState) => ({

@@ -59,7 +59,7 @@ const Login = ({ navigation, isLoading, error, performLogin }: Props) => {
   };
 
   return (
-    <Center w="100%">
+    <Center w="100%" pt={130}>
       <Box safeArea p="2" py="8" w="90%" maxW="290">
         <Heading
           size="lg"
@@ -163,29 +163,34 @@ const mapStateToProps = (state: ApplicationState) => ({
 });
 
 const mappedActions = {
-  performLogin: (auth: Credentials, successCallback: Function) => async (dispatch: Dispatch) => {
-    try {
-      dispatch(setAuthLoading(true));
-      const data = await performAuth(
-        auth?.identifier ?? "",
-        auth?.password ?? ""
-      );
-      dispatch(setAuthenticatedUser(data?.jwt, data?.user));
-      await saveKey(Constants.storage.AUTH_TOKEN, data?.jwt ?? "");
-      const userProfile: User = await getUserProfile(data?.user?.id, data?.jwt);
-      dispatch(setProfileData(userProfile?.profile));
-      successCallback();
-    } catch (e: any) {
-      const { data } = e;
-      dispatch(setAuthLoading(false));
-      dispatch(
-        setAuthenticationFailed({
-          status: data?.error?.status ?? 400,
-          message: data?.error?.message ?? "Something went wrong",
-        })
-      );
-    }
-  },
+  performLogin:
+    (auth: Credentials, successCallback: Function) =>
+    async (dispatch: Dispatch) => {
+      try {
+        dispatch(setAuthLoading(true));
+        const data = await performAuth(
+          auth?.identifier ?? "",
+          auth?.password ?? ""
+        );
+        dispatch(setAuthenticatedUser(data?.jwt, data?.user));
+        await saveKey(Constants.storage.AUTH_TOKEN, data?.jwt ?? "");
+        const userProfile: User = await getUserProfile(
+          data?.user?.id,
+          data?.jwt
+        );
+        dispatch(setProfileData(userProfile?.profile));
+        successCallback();
+      } catch (e: any) {
+        const { data } = e;
+        dispatch(setAuthLoading(false));
+        dispatch(
+          setAuthenticationFailed({
+            status: data?.error?.status ?? 400,
+            message: data?.error?.message ?? "Something went wrong",
+          })
+        );
+      }
+    },
 };
 
 export default connect(mapStateToProps, mappedActions)(Login);

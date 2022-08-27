@@ -15,6 +15,7 @@ import NewsFeed from "./screens/NewsFeed";
 import Matchs from "./screens/Matchs";
 import Profile from "./screens/Profile";
 import Community from "./screens/Community";
+import EditProfile from "./screens/EditProfile";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -102,6 +103,7 @@ export default function App() {
             <Stack.Screen name={Pages.Login} component={Login} options={{ headerShown: false }} />
             <Stack.Screen name={Pages.Home} component={HomeScreen} options={{ headerShown: false }} />
             <Stack.Screen name={Pages.Register} component={Register} options={{ headerShown: false }} />
+            <Stack.Screen name={Pages.EditProfile} component={EditProfile} options={{ headerShown: false }} />
           </Stack.Navigator>
         </NavigationContainer>
       </NativeBaseProvider>

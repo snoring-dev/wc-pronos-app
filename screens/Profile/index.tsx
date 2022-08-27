@@ -5,7 +5,9 @@ import { connect } from "react-redux";
 import { Profile as ProfileType } from "../../store/Auth/types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../utils/Pages";
-import { Center, Flex, Image, VStack, Text, Box } from "native-base";
+import { Center, Flex, Image, VStack, Text, Box, Button } from "native-base";
+import format from "date-fns/format";
+import { parseISO } from "date-fns";
 
 interface ProfileComponentProps {
   profile: ProfileType;
@@ -23,10 +25,15 @@ const Profile = ({ profile, username, navigation }: Props) => {
           source={{
             uri: profile.picture.formats.medium.url,
           }}
-          alt={profile.picture.alternativeText}
+          alt={profile?.picture?.alternativeText ?? username}
           size={150}
         />
-        <Text textAlign={"center"} color="gray.500" fontSize={18} paddingTop={2}>
+        <Text
+          textAlign={"center"}
+          color="gray.500"
+          fontSize={18}
+          paddingTop={2}
+        >
           @{username}
         </Text>
       </Center>
@@ -73,7 +80,19 @@ const Profile = ({ profile, username, navigation }: Props) => {
           alignItems="center"
         >
           <Text bold>Registration date:</Text>
-          <Text>{profile.createdAt}</Text>
+          <Text>{format(parseISO(profile.createdAt), "dd MMM yyyy")}</Text>
+        </Box>
+        <Box paddingTop={50}>
+          <Button
+            size="lg"
+            colorScheme="blue"
+            variant="subtle"
+            onPress={() => {
+              navigation.navigate("EditProfile");
+            }}
+          >
+            Edit your profile
+          </Button>
         </Box>
       </VStack>
     </View>

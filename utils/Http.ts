@@ -8,6 +8,7 @@
  */
 
 import axios from "axios";
+import { getValueFor } from ".";
 import { Constants } from "./Constants";
 
 /**
@@ -39,6 +40,15 @@ export const onError = function (error: any) {
 
   return Promise.reject(error.response || error.message);
 };
+
+// Add a request interceptor
+client.interceptors.request.use(async function (config) {
+  if (config && config.headers) {
+    const jwt = await getValueFor(Constants.storage.AUTH_TOKEN) ?? '';
+    config.headers.Authorization =  `Bearer ${jwt}`;
+  }
+  return config;
+});
 
 /**
  * Request Wrapper with default success/error actions

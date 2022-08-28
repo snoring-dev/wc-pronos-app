@@ -60,16 +60,17 @@ const EditProfile = ({
 
     if (!result.cancelled) {
       setImageLoading(true);
-      const jwt = await getValueFor(Constants.storage.AUTH_TOKEN);
       const resp = await sendProfilePicture(
-        profile.id,
         username,
         result.uri,
-        jwt ?? ""
       );
-      const linking = await linkPictureToProfile(profile.id, resp[0].id, jwt ?? "");
-      console.log('LINK:', linking);
-      setImage(result.uri);
+
+
+      if (resp[0].id) {
+        const linking = await linkPictureToProfile(profile.id, resp[0].id);
+        setImage(result.uri);
+      }
+
       setImageLoading(false);
     }
   };

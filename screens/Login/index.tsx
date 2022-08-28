@@ -176,7 +176,6 @@ const mappedActions = {
         await saveKey(Constants.storage.AUTH_TOKEN, data?.jwt ?? "");
         const userProfile: User = await getUserProfile(
           data?.user?.id,
-          data?.jwt
         );
         dispatch(setProfileData(userProfile?.profile));
         successCallback();

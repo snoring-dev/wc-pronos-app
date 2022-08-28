@@ -1,4 +1,4 @@
-import { Touchable, View } from "react-native";
+import { View } from "react-native";
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
@@ -15,7 +15,6 @@ import {
   HStack,
   Image,
   Input,
-  PlayIcon,
   Pressable,
   Select,
   Spinner,
@@ -28,14 +27,14 @@ import {
   linkPictureToProfile,
   sendProfilePicture,
 } from "../../store/Auth/services";
-import { getValueFor } from "../../utils";
-import { Constants } from "../../utils/Constants";
+import { Group, Team } from "../../store/Tournament/types";
 
 interface OwnProps {
   profile: ProfileType;
   username: string;
   isLoading: boolean;
   error: FailureState;
+  teams?: Team[];
 }
 
 type Props = OwnProps & NativeStackScreenProps<RootStackParamList>;
@@ -46,6 +45,7 @@ const EditProfile = ({
   error,
   isLoading,
   navigation,
+  teams = [],
 }: Props) => {
   const [countryCode, setCountryCode] = useState<CountryCode>("FR");
   const [profileData, setProfileData] = useState({
@@ -170,11 +170,25 @@ const EditProfile = ({
               }}
               mt={1}
             >
-              <Select.Item label="UX Research" value="ux" />
-              <Select.Item label="Web Development" value="web" />
-              <Select.Item label="Cross Platform Development" value="cross" />
-              <Select.Item label="UI Designing" value="ui" leftIcon={<PlayIcon />}/>
-              <Select.Item label="Backend Development" value="backend" />
+              {teams.map((team: Team) => {
+                return (
+                  <Select.Item
+                    key={team.country_code}
+                    label={team.name}
+                    value={team.country_code}
+                    leftIcon={
+                      <Image
+                        position="relative"
+                        top={0.5}
+                        width={7}
+                        height={5}
+                        source={{ uri: team.flag }}
+                        alt={team.name}
+                      />
+                    }
+                  />
+                );
+              })}
             </Select>
           </FormControl>
           <Button
@@ -197,6 +211,9 @@ const mapStateToProps = (state: ApplicationState) => ({
   username: state?.auth.user?.username ?? "",
   isLoading: state?.auth?.isLoading,
   error: state?.auth?.failure,
+  teams: state?.tournament?.groups?.reduce((current: any, group: Group) => {
+    return [...current, ...group.teams];
+  }, []),
 });
 
 export default connect(mapStateToProps)(EditProfile);

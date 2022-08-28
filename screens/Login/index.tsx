@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   Link,
@@ -29,6 +29,8 @@ import { Constants } from "../../utils/Constants";
 import { AlertMessage } from "../../components/AlertMessage";
 import { User } from "../../store/Auth/types";
 import { injectAuthTokenToRequest } from "../../utils/Http";
+import { getTournamentData } from "../../store/Tournament/services";
+import { setTournamentData, setTournamentFailed } from "../../store/Tournament/actions";
 
 interface Credentials {
   identifier?: string;
@@ -39,11 +41,12 @@ interface LoginComponentProps {
   isLoading: boolean;
   error: FailureState;
   performLogin: any;
+  loadTournamentData: any;
 }
 
 type Props = LoginComponentProps & NativeStackScreenProps<RootStackParamList>;
 
-const Login = ({ navigation, isLoading, error, performLogin }: Props) => {
+const Login = ({ navigation, isLoading, error, performLogin, loadTournamentData }: Props) => {
   const [credentials, setCredentials] = useState({
     identifier: "",
     password: "",
@@ -52,6 +55,11 @@ const Login = ({ navigation, isLoading, error, performLogin }: Props) => {
   const handleInputVal = (field: string, value: string) => {
     setCredentials((current) => ({ ...credentials, [field]: value }));
   };
+
+  useEffect(() => {
+    loadTournamentData();
+  }, []);
+  
 
   const submitCredentials = () => {
     performLogin(credentials, () =>
@@ -193,6 +201,20 @@ const mappedActions = {
         );
       }
     },
+  loadTournamentData: () => async (dispatch: Dispatch) => {
+    try {
+      const tournament = await getTournamentData();
+      dispatch(setTournamentData(tournament));
+    } catch (e: any) {
+      const { data } = e;
+      dispatch(
+        setTournamentFailed({
+          status: data?.error?.status ?? 400,
+          message: data?.error?.message ?? "Something went wrong",
+        })
+      );
+    }
+  },
 };
 
 export default connect(mapStateToProps, mappedActions)(Login);

@@ -28,6 +28,13 @@ export const configureStore = (): Store<ApplicationState> => {
       },
       isLoading: false,
     },
+    tournament: {
+      failure: {
+        status: 200,
+        message: "",
+      },
+      isLoading: false,
+    },
   };
 
   const middlewares = [thunk];

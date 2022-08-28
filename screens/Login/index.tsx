@@ -28,6 +28,7 @@ import { saveKey } from "../../utils";
 import { Constants } from "../../utils/Constants";
 import { AlertMessage } from "../../components/AlertMessage";
 import { User } from "../../store/Auth/types";
+import { injectAuthTokenToRequest } from "../../utils/Http";
 
 interface Credentials {
   identifier?: string;
@@ -174,8 +175,10 @@ const mappedActions = {
         );
         dispatch(setAuthenticatedUser(data?.jwt, data?.user));
         await saveKey(Constants.storage.AUTH_TOKEN, data?.jwt ?? "");
+        injectAuthTokenToRequest();
         const userProfile: User = await getUserProfile(
           data?.user?.id,
+          data?.jwt
         );
         dispatch(setProfileData(userProfile?.profile));
         successCallback();

@@ -10,18 +10,24 @@ import { RootStackParamList } from "../../utils/Pages";
 import {
   Button,
   Center,
+  CheckIcon,
   FormControl,
   HStack,
   Image,
   Input,
+  PlayIcon,
   Pressable,
+  Select,
   Spinner,
   Text,
   VStack,
 } from "native-base";
 import { AlertMessage } from "../../components/AlertMessage";
 import { FailureState } from "../../types";
-import { linkPictureToProfile, sendProfilePicture } from "../../store/Auth/services";
+import {
+  linkPictureToProfile,
+  sendProfilePicture,
+} from "../../store/Auth/services";
 import { getValueFor } from "../../utils";
 import { Constants } from "../../utils/Constants";
 
@@ -60,11 +66,7 @@ const EditProfile = ({
 
     if (!result.cancelled) {
       setImageLoading(true);
-      const resp = await sendProfilePicture(
-        username,
-        result.uri,
-      );
-
+      const resp = await sendProfilePicture(username, result.uri);
 
       if (resp[0].id) {
         const linking = await linkPictureToProfile(profile.id, resp[0].id);
@@ -158,11 +160,22 @@ const EditProfile = ({
           </FormControl>
           <FormControl>
             <FormControl.Label>Your preffered team</FormControl.Label>
-            <Input
-              type="text"
-              isRequired
-              onChangeText={(val) => handleInputVal("team", val)}
-            />
+            <Select
+              minWidth="200"
+              accessibilityLabel="Choose Service"
+              placeholder="Choose Service"
+              _selectedItem={{
+                bg: "teal.600",
+                endIcon: <CheckIcon size="5" />,
+              }}
+              mt={1}
+            >
+              <Select.Item label="UX Research" value="ux" />
+              <Select.Item label="Web Development" value="web" />
+              <Select.Item label="Cross Platform Development" value="cross" />
+              <Select.Item label="UI Designing" value="ui" leftIcon={<PlayIcon />}/>
+              <Select.Item label="Backend Development" value="backend" />
+            </Select>
           </FormControl>
           <Button
             mt="2"

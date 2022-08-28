@@ -41,14 +41,16 @@ export const onError = function (error: any) {
   return Promise.reject(error.response || error.message);
 };
 
-// Add a request interceptor
-client.interceptors.request.use(async function (config) {
-  if (config && config.headers) {
+export const injectAuthTokenToRequest = () => {
+  // Add a request interceptor
+  client.interceptors.request.use(async function (config) {
     const jwt = await getValueFor(Constants.storage.AUTH_TOKEN) ?? '';
-    config.headers.Authorization =  `Bearer ${jwt}`;
-  }
-  return config;
-});
+    if (config && config.headers && jwt) {
+      config.headers.Authorization =  `Bearer ${jwt}`;
+    }
+    return config;
+  });
+}
 
 /**
  * Request Wrapper with default success/error actions

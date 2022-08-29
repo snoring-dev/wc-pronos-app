@@ -61,3 +61,16 @@ export const linkPictureToProfile = async (
 
   return resp;
 };
+
+export const updateProfileData = async (profileId: number, profileData: any) => {
+  const resp = await request({
+    url: `/profiles/${profileId}`,
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: { data: profileData },
+  });
+
+  return resp;
+};

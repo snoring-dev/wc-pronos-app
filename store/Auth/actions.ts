@@ -22,6 +22,13 @@ export const setProfileData = (profile: Profile) => {
   };
 }
 
+export const setUpdatedProfileData = (recentProfile: any) => {
+  return {
+      type: AuthActionTypes.UPDATE_PROFILE_DATA,
+      payload: recentProfile,
+  };
+}
+
 export const setAuthenticationFailed = (failure: FailureState) => ({
   type: AuthActionTypes.SET_AUTH_FAILED,
   payload: failure,

@@ -34,6 +34,28 @@ function reducer(state: AuthState = initialState, action: AnyAction) {
         failure: { status: 200, message: "OK" },
       };
     }
+    case AuthActionTypes.UPDATE_PROFILE_DATA: {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          profile: {
+            picture: {
+              ...state.user?.profile.picture,
+            },
+            preferred_team: payload?.preferred_team,
+            country_from: payload?.country_from,
+            firstname: payload?.firstname,
+            lastname: payload?.lastname,
+            country: payload?.country,
+            createdAt: payload?.createdAt,
+            updatedAt: payload?.updatedAt,
+          },
+        },
+        isLoading: false,
+        failure: { status: 200, message: "OK" },
+      }
+    }
     case AuthActionTypes.SET_AUTH_FAILED: {
       return {
         ...state,

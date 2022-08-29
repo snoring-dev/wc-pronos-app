@@ -1,4 +1,6 @@
+import { Country } from "react-native-country-picker-modal";
 import { FailureState } from "../../types";
+import { Team } from "../Tournament/types";
 
 export interface User {
   id: 4;
@@ -65,6 +67,8 @@ export interface Profile {
   createdAt: string;
   updatedAt: string;
   picture: Picture;
+  country_from?: Country;
+  preferred_team?: Team;
 }
 
 export interface AuthState {
@@ -79,4 +83,5 @@ export enum AuthActionTypes {
   SET_AUTH_FAILED = "@wc-app/auth/SET_AUTH_FAILED",
   SET_AUTH_LOADING = "@wc-app/auth/SET_AUTH_LOADING",
   SET_PROFILE_DATA = "@wc-app/auth/SET_PROFILE_DATA",
+  UPDATE_PROFILE_DATA = "@wc-app/auth/UPDATE_PROFILE_DATA",
 }

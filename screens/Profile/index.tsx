@@ -5,7 +5,16 @@ import { connect } from "react-redux";
 import { Profile as ProfileType } from "../../store/Auth/types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../utils/Pages";
-import { Center, Flex, Image, VStack, Text, Box, Button } from "native-base";
+import {
+  Center,
+  View as NBView,
+  Image,
+  VStack,
+  Text,
+  Box,
+  Button,
+  HStack,
+} from "native-base";
 import format from "date-fns/format";
 import { parseISO } from "date-fns";
 
@@ -28,14 +37,37 @@ const Profile = ({ profile, username, navigation }: Props) => {
           alt={profile?.picture?.alternativeText ?? username}
           size={150}
         />
-        <Text
-          textAlign={"center"}
-          color="gray.500"
-          fontSize={18}
-          paddingTop={2}
-        >
-          @{username}
-        </Text>
+        <HStack paddingTop={3}>
+          <Text
+            textAlign={"center"}
+            color="gray.500"
+            fontSize={18}
+            paddingTop={2}
+          >
+            @{username}
+          </Text>
+          <Center>
+            <NBView
+              w="0.5"
+              h={6}
+              position="relative"
+              top="1"
+              backgroundColor="gray.200"
+              marginRight={2}
+              marginLeft={2}
+            />
+          </Center>
+          <Center>
+            <Image
+              alt={profile.preferred_team?.name ?? ""}
+              source={{ uri: profile.preferred_team?.flag }}
+              w={7}
+              h={5}
+              position="relative"
+              top="1"
+            />
+          </Center>
+        </HStack>
       </Center>
       <VStack paddingTop={10} space={4} alignItems="center">
         <Box
@@ -69,7 +101,9 @@ const Profile = ({ profile, username, navigation }: Props) => {
           alignItems="center"
         >
           <Text bold>Country:</Text>
-          <Text>{profile.country}</Text>
+          <Text>
+            {profile.country_from?.name} | {profile.country_from?.region}
+          </Text>
         </Box>
         <Box
           width="80%"

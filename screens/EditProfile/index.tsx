@@ -2,7 +2,10 @@ import { View } from "react-native";
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
-import CountryPicker, { CountryCode } from "react-native-country-picker-modal";
+import CountryPicker, {
+  Country,
+  CountryCode,
+} from "react-native-country-picker-modal";
 import { ApplicationState } from "../../store";
 import { Profile as ProfileType } from "../../store/Auth/types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -26,8 +29,16 @@ import { FailureState } from "../../types";
 import {
   linkPictureToProfile,
   sendProfilePicture,
+  updateProfileData,
 } from "../../store/Auth/services";
 import { Group, Team } from "../../store/Tournament/types";
+import {
+  setAuthenticationFailed,
+  setAuthLoading,
+  setUpdatedProfileData,
+} from "../../store/Auth/actions";
+import { Dispatch } from "redux";
+import { omit } from "ramda";
 
 interface OwnProps {
   profile: ProfileType;
@@ -35,6 +46,7 @@ interface OwnProps {
   isLoading: boolean;
   error: FailureState;
   teams?: Team[];
+  updateProfile: any;
 }
 
 type Props = OwnProps & NativeStackScreenProps<RootStackParamList>;
@@ -46,15 +58,20 @@ const EditProfile = ({
   isLoading,
   navigation,
   teams = [],
+  updateProfile = () => {},
 }: Props) => {
-  const [countryCode, setCountryCode] = useState<CountryCode>("FR");
+  const [countryCode, setCountryCode] = useState(
+    profile?.country_from?.cca2 ?? "FR"
+  );
+  const [myTeam, setMyTeam] = useState(profile?.preferred_team?.country_code);
   const [profileData, setProfileData] = useState({
     firstname: profile.firstname,
     lastname: profile.lastname,
-    country: profile.country,
+    country_from: profile?.country_from ?? "",
+    preferred_team: profile?.preferred_team ?? "",
   });
   const [imageLoading, setImageLoading] = useState(false);
-  const [image, setImage] = useState(profile.picture.formats.medium.url);
+  const [image, setImage] = useState(profile?.picture?.formats?.medium?.url ?? '');
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -77,7 +94,20 @@ const EditProfile = ({
     }
   };
 
-  const handleInputVal = (field: string, value: string) => {
+  const pickPreferredTeam = (item: string) => {
+    setMyTeam(item);
+    handleInputVal(
+      "preferred_team",
+      teams.find((tm) => tm.country_code === item)
+    );
+  };
+
+  const pickCountry = (country: Country) => {
+    setCountryCode(country?.cca2);
+    handleInputVal("country_from", country);
+  };
+
+  const handleInputVal = (field: string, value: any) => {
     setProfileData(() => ({ ...profileData, [field]: value }));
   };
 
@@ -141,26 +171,22 @@ const EditProfile = ({
               value={profileData?.lastname}
             />
           </FormControl>
-          <CountryPicker
-            countryCode={countryCode}
-            withFilter
-            withFlag
-            withCountryNameButton
-            withAlphaFilter
-            visible
-          />
           <FormControl>
             <FormControl.Label>Country</FormControl.Label>
-            <Input
-              type="text"
-              isRequired
-              onChangeText={(val) => handleInputVal("country", val)}
-              value={profileData?.country}
+            <CountryPicker
+              countryCode={countryCode as CountryCode}
+              withFilter
+              withFlag
+              withCountryNameButton
+              withAlphaFilter
+              onSelect={pickCountry}
             />
           </FormControl>
           <FormControl>
             <FormControl.Label>Your preffered team</FormControl.Label>
             <Select
+              selectedValue={myTeam}
+              onValueChange={pickPreferredTeam}
               minWidth="200"
               accessibilityLabel="Choose Service"
               placeholder="Choose Service"
@@ -197,6 +223,7 @@ const EditProfile = ({
             onPress={() => {}}
             isLoading={isLoading}
             isLoadingText="Hold on..."
+            onPressIn={() => updateProfile(profile.id, profileData)}
           >
             Update
           </Button>
@@ -216,4 +243,24 @@ const mapStateToProps = (state: ApplicationState) => ({
   }, []),
 });
 
-export default connect(mapStateToProps)(EditProfile);
+const mappedActions = {
+  updateProfile: (id: number, data: any) => async (dispatch: Dispatch) => {
+    dispatch(setAuthLoading(true));
+    try {
+      const resp = await updateProfileData(id, data);
+      console.log("profile =>", resp);
+      dispatch(setUpdatedProfileData(resp.data.attributes));
+    } catch (e: any) {
+      const { data: errorData } = e;
+      dispatch(setAuthLoading(false));
+      dispatch(
+        setAuthenticationFailed({
+          status: errorData?.error?.status ?? 400,
+          message: errorData?.error?.message ?? "Something went wrong",
+        })
+      );
+    }
+  },
+};
+
+export default connect(mapStateToProps, mappedActions)(EditProfile);

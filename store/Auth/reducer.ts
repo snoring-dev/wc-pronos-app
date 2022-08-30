@@ -40,6 +40,7 @@ function reducer(state: AuthState = initialState, action: AnyAction) {
         user: {
           ...state.user,
           profile: {
+            ...state.user?.profile,
             picture: {
               ...state.user?.profile.picture,
             },

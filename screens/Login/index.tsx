@@ -30,7 +30,10 @@ import { AlertMessage } from "../../components/AlertMessage";
 import { User } from "../../store/Auth/types";
 import { injectAuthTokenToRequest } from "../../utils/Http";
 import { getTournamentData } from "../../store/Tournament/services";
-import { setTournamentData, setTournamentFailed } from "../../store/Tournament/actions";
+import {
+  setTournamentData,
+  setTournamentFailed,
+} from "../../store/Tournament/actions";
 
 interface Credentials {
   identifier?: string;
@@ -42,11 +45,20 @@ interface LoginComponentProps {
   error: FailureState;
   performLogin: any;
   loadTournamentData: any;
+  jwt?: string;
 }
 
 type Props = LoginComponentProps & NativeStackScreenProps<RootStackParamList>;
 
-const Login = ({ navigation, isLoading, error, performLogin, loadTournamentData }: Props) => {
+const Login = ({
+  navigation,
+  isLoading,
+  error,
+  performLogin,
+  loadTournamentData,
+  jwt = "",
+}: Props) => {
+
   const [credentials, setCredentials] = useState({
     identifier: "",
     password: "",
@@ -57,9 +69,12 @@ const Login = ({ navigation, isLoading, error, performLogin, loadTournamentData 
   };
 
   useEffect(() => {
+    if (jwt !== '') {
+      navigation.navigate("Home", { screen: "Profile" });
+    }
+    
     loadTournamentData();
   }, []);
-  
 
   const submitCredentials = () => {
     performLogin(credentials, () =>
@@ -169,6 +184,7 @@ const Login = ({ navigation, isLoading, error, performLogin, loadTournamentData 
 const mapStateToProps = (state: ApplicationState) => ({
   isLoading: state?.auth?.isLoading,
   error: state?.auth?.failure,
+  jwt: state?.auth?.jwt ?? "",
 });
 
 const mappedActions = {

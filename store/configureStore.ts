@@ -35,6 +35,14 @@ export const configureStore = (): Store<ApplicationState> => {
       },
       isLoading: false,
     },
+    community: {
+      communities: [],
+      failure: {
+        status: 200,
+        message: "",
+      },
+      isLoading: false,
+    },
   };
 
   const middlewares = [thunk];

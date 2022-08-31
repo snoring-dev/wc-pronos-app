@@ -38,7 +38,6 @@ import {
   setUpdatedProfileData,
 } from "../../store/Auth/actions";
 import { Dispatch } from "redux";
-import { omit } from "ramda";
 
 interface OwnProps {
   profile: ProfileType;

@@ -1,4 +1,5 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Dimensions } from "react-native";
 import {
   AddIcon,
   Button,
@@ -12,7 +13,7 @@ import {
   VStack,
 } from "native-base";
 import { omit } from "ramda";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal } from "react-native";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
@@ -20,11 +21,15 @@ import EmptyState from "../../assets/empty_state.svg";
 import { AlertMessage } from "../../components/AlertMessage";
 import { ApplicationState } from "../../store";
 import {
+  setCommunitiesData,
   setCommunityData,
   setCommunityFailed,
   setCommunityLoading,
 } from "../../store/community/actions";
-import { createCommunity } from "../../store/community/services";
+import {
+  createCommunity,
+  findAllCommunities,
+} from "../../store/community/services";
 import { Community as CommunityType } from "../../store/community/types";
 import { FailureState } from "../../types";
 import { makeid } from "../../utils";
@@ -36,9 +41,12 @@ interface OwnProps {
   isLoading: boolean;
   error: FailureState;
   submitCommunityData: any;
+  fetchCommunities: any;
 }
 
 type Props = OwnProps & NativeStackScreenProps<RootStackParamList>;
+
+const windowHeight = Dimensions.get('window').height;
 
 const Community = ({
   userId,
@@ -46,6 +54,7 @@ const Community = ({
   isLoading,
   error,
   navigation,
+  fetchCommunities = () => {},
   submitCommunityData = () => {},
 }: Props) => {
   const [showModal, setShowModal] = useState(false);
@@ -62,6 +71,10 @@ const Community = ({
   const submitModal = () => {
     submitCommunityData(userId, communityData, () => setShowModal(false));
   };
+
+  useEffect(() => {
+    fetchCommunities();
+  }, []);
 
   return (
     <View position="relative">
@@ -164,7 +177,7 @@ const Community = ({
           </VStack>
         </Center>
       )}
-      <View position="absolute" top="610" right="3">
+      <View position="absolute" top={windowHeight - 60} right="3">
         <Button
           borderRadius={100}
           width={50}
@@ -187,6 +200,24 @@ const mapStateToProps = (state: ApplicationState) => ({
 });
 
 const mappedActions = {
+  fetchCommunities: () => async (dispatch: Dispatch) => {
+    try {
+      dispatch(setCommunityLoading(true));
+      const response = await findAllCommunities();
+      console.log("RESP =>", response);
+      dispatch(setCommunitiesData(response.data));
+      dispatch(setCommunityLoading(false));
+    } catch (e: any) {
+      const { data: errorData } = e;
+      dispatch(setCommunityLoading(false));
+      dispatch(
+        setCommunityFailed({
+          status: errorData?.error.status ?? 400,
+          message: errorData?.error.message ?? "Something went wrong",
+        })
+      );
+    }
+  },
   submitCommunityData:
     (userId: number, data: any, successCallback: () => void) =>
     async (dispatch: Dispatch) => {

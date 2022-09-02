@@ -1,8 +1,13 @@
 import { FailureState } from "../../types";
 import { CommunityActionTypes } from "./types";
 
-export const setCommunityData = (data: any) => ({
+export const setCommunitiesData = (data: any) => ({
   type: CommunityActionTypes.SET_COMMUNITY_DATA,
+  payload: data,
+});
+
+export const setCommunityData = (data: any) => ({
+  type: CommunityActionTypes.SET_APPEND_COMMUNITY_DATA,
   payload: data,
 });
 

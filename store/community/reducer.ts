@@ -14,6 +14,13 @@ function reducer(state: CommunityState = initialState, action: AnyAction) {
       return {
         ...state,
         failure: initialState.failure,
+        communities: [...payload],
+      };
+    }
+    case CommunityActionTypes.SET_APPEND_COMMUNITY_DATA: {
+      return {
+        ...state,
+        failure: initialState.failure,
         communities: [...state.communities, payload],
       };
     }

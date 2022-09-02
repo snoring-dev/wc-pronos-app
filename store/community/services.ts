@@ -12,3 +12,15 @@ export const createCommunity = async (userId: number, data: any) => {
 
   return resp;
 };
+
+export const findAllCommunities = async () => {
+  const resp = await request({
+    url: `/communities/all`,
+    method: "get",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  return resp;
+};

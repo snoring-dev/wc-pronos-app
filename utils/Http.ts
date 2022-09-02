@@ -55,7 +55,15 @@ export const injectAuthTokenToRequest = () => {
 /**
  * Request Wrapper with default success/error actions
  */
-const request = function (options: any) {
+const request = function (options: any, isLogin = false) {
+  if (isLogin) {
+    const loginClient = axios.create({
+      baseURL: Constants.api.baseUrl,
+    });
+
+    return loginClient(options).then(onSuccess).catch(onError);
+  }
+
   return client(options).then(onSuccess).catch(onError);
 };
 

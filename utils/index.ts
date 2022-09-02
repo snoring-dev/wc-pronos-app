@@ -1,5 +1,5 @@
 import Emitter from "tiny-emitter";
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from "expo-secure-store";
 
 const emitter = new Emitter();
 
@@ -27,4 +27,15 @@ export const on = (name: string, callback: () => void) => {
 
 export const off = (name: string, handler: () => void) => {
   emitter.off(name, handler);
+};
+
+export const makeid = (length: number) => {
+  var result = "";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
 };

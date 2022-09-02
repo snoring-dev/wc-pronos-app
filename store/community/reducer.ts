@@ -12,8 +12,9 @@ function reducer(state: CommunityState = initialState, action: AnyAction) {
   switch (type) {
     case CommunityActionTypes.SET_COMMUNITY_DATA: {
       return {
-        ...initialState,
-        ...payload,
+        ...state,
+        failure: initialState.failure,
+        communities: [...state.communities, payload],
       };
     }
     case CommunityActionTypes.SET_COMMUNITY_LOADING: {

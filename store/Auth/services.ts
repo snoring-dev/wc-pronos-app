@@ -9,7 +9,7 @@ export const performAuth = async (id: string, pwd: string) => {
       "Content-Type": "application/json",
     },
     data: { identifier: id, password: pwd },
-  });
+  }, true);
   return resp;
 };
 

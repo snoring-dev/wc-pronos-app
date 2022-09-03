@@ -31,8 +31,8 @@ const CommunitiesList = ({
   refreshAction = () => {},
 }: Props) => {
 
-  const copyToClipboard = async (code: string) => {
-    await Clipboard.setStringAsync(code);
+  const copyToClipboard = (code: string) => {
+    Clipboard.setString(code);
   };
 
   return (

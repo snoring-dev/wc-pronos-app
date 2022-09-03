@@ -6,6 +6,7 @@ export interface Community {
   name: string;
   winning_prize: string;
   access_code: string;
+  createdAt: string;
   users?: User[];
 }
 

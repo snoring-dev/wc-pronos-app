@@ -205,6 +205,7 @@ const mappedActions = {
           data?.jwt
         );
         dispatch(setProfileData(userProfile?.profile));
+        dispatch(setAuthLoading(false));
         successCallback();
       } catch (e: any) {
         const { data } = e;

@@ -13,7 +13,8 @@ function reducer(state: AuthState = initialState, action: AnyAction) {
   switch (type) {
     case AuthActionTypes.SET_USER_DATA: {
       return {
-        ...initialState,
+        ...state,
+        failure: { status: 200, message: "OK" },
         ...payload,
       };
     }
@@ -30,7 +31,6 @@ function reducer(state: AuthState = initialState, action: AnyAction) {
           ...state.user,
           profile: { ...payload },
         },
-        isLoading: false,
         failure: { status: 200, message: "OK" },
       };
     }

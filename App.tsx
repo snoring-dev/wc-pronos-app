@@ -10,7 +10,8 @@ import { Pages } from "./utils/Pages";
 import { ApplicationState } from "./store";
 import { configureStore } from "./store/configureStore";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import FlashMessage from "react-native-flash-message";
 import NewsFeed from "./screens/NewsFeed";
 import Matchs from "./screens/Matchs";
 import Profile from "./screens/Profile";
@@ -72,7 +73,7 @@ function MyTabs() {
   );
 }
 
-export function HomeScreen () {
+export function HomeScreen() {
   return (
     <>
       <MyTabs />
@@ -97,13 +98,30 @@ export default function App() {
   const globalStore: Store<ApplicationState> = configureStore();
   return (
     <AppStoreProvider store={globalStore}>
+      <FlashMessage position="top" />
       <NativeBaseProvider>
         <NavigationContainer>
           <Stack.Navigator>
-            <Stack.Screen name={Pages.Login} component={Login} options={{ headerShown: false }} />
-            <Stack.Screen name={Pages.Home} component={HomeScreen} options={{ headerShown: false }} />
-            <Stack.Screen name={Pages.Register} component={Register} options={{ headerShown: false }} />
-            <Stack.Screen name={Pages.EditProfile} component={EditProfile} options={{ headerShown: false }} />
+            <Stack.Screen
+              name={Pages.Login}
+              component={Login}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name={Pages.Home}
+              component={HomeScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name={Pages.Register}
+              component={Register}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name={Pages.EditProfile}
+              component={EditProfile}
+              options={{ headerShown: false }}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </NativeBaseProvider>

@@ -1,13 +1,13 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Dimensions } from "react-native";
 import {
-  AddIcon,
+  Box,
   Button,
   Center,
   FormControl,
   Heading,
   Image,
   Input,
+  Menu,
   Text,
   View,
   VStack,
@@ -17,6 +17,7 @@ import React, { useEffect, useState } from "react";
 import { Modal } from "react-native";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+import { Ionicons } from "@expo/vector-icons";
 import EmptyState from "../../assets/empty_state.svg";
 import { AlertMessage } from "../../components/AlertMessage";
 import { ApplicationState } from "../../store";
@@ -34,6 +35,7 @@ import { Community as CommunityType } from "../../store/community/types";
 import { FailureState } from "../../types";
 import { makeid } from "../../utils";
 import { RootStackParamList } from "../../utils/Pages";
+import { CommunitiesList } from "../../components/CommunitiesList";
 
 interface OwnProps {
   userId: number;
@@ -45,8 +47,6 @@ interface OwnProps {
 }
 
 type Props = OwnProps & NativeStackScreenProps<RootStackParamList>;
-
-const windowHeight = Dimensions.get('window').height;
 
 const Community = ({
   userId,
@@ -177,17 +177,44 @@ const Community = ({
           </VStack>
         </Center>
       )}
-      <View position="absolute" top={windowHeight - 60} right="3">
-        <Button
-          borderRadius={100}
-          width={50}
-          height={50}
-          bgColor={"indigo.700"}
-          color="white"
-          startIcon={<AddIcon />}
-          onPress={() => setShowModal(true)}
-        />
-      </View>
+      <Box w="100%" alignItems="center">
+        <Menu
+          w="190"
+          placement="left top"
+          marginRight={2}
+          trigger={(triggerProps) => {
+            return (
+              <Button
+                position="absolute"
+                right="-10"
+                top="2"
+                borderLeftRadius={100}
+                paddingRight="5"
+                height={50}
+                bgColor={"blue.300"}
+                color="white"
+                startIcon={
+                  <Ionicons name="options-outline" size={24} color="white" />
+                }
+                {...triggerProps}
+              />
+            );
+          }}
+        >
+          <Menu.Item onPress={() => setShowModal(true)}>
+            Create community
+          </Menu.Item>
+          <Menu.Item onPress={() => console.log("Join Community")}>
+            Join community
+          </Menu.Item>
+        </Menu>
+      </Box>
+      <CommunitiesList
+        marginTop="10"
+        width="90%"
+        data={data}
+        refreshAction={() => fetchCommunities()}
+      />
     </View>
   );
 };
@@ -204,7 +231,6 @@ const mappedActions = {
     try {
       dispatch(setCommunityLoading(true));
       const response = await findAllCommunities();
-      console.log("RESP =>", response);
       dispatch(setCommunitiesData(response.data));
       dispatch(setCommunityLoading(false));
     } catch (e: any) {

@@ -18,6 +18,7 @@ import { Modal } from "react-native";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { Ionicons } from "@expo/vector-icons";
+import Dialog from "react-native-dialog";
 import EmptyState from "../../assets/empty_state.svg";
 import { AlertMessage } from "../../components/AlertMessage";
 import { ApplicationState } from "../../store";
@@ -30,6 +31,7 @@ import {
 import {
   createCommunity,
   findAllCommunities,
+  joinCommunity,
 } from "../../store/community/services";
 import { Community as CommunityType } from "../../store/community/types";
 import { FailureState } from "../../types";
@@ -44,6 +46,7 @@ interface OwnProps {
   error: FailureState;
   submitCommunityData: any;
   fetchCommunities: any;
+  submitAccessCode: any;
 }
 
 type Props = OwnProps & NativeStackScreenProps<RootStackParamList>;
@@ -56,6 +59,7 @@ const Community = ({
   navigation,
   fetchCommunities = () => {},
   submitCommunityData = () => {},
+  submitAccessCode = () => {},
 }: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [communityData, setCommunityData] = useState({
@@ -63,6 +67,23 @@ const Community = ({
     winning_prize: "",
     access_code: makeid(10),
   });
+
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [accessCode, setAccessCode] = useState("");
+
+  const showAddDialog = () => {
+    setDialogVisible(true);
+  };
+
+  const handleCancel = () => {
+    setDialogVisible(false);
+  };
+
+  const handleDialogSubmit = () => {
+    submitAccessCode(userId, accessCode, () => {
+      setDialogVisible(false);
+    });
+  };
 
   const handleInputVal = (field: string, value: any) => {
     setCommunityData(() => ({ ...communityData, [field]: value }));
@@ -204,17 +225,41 @@ const Community = ({
           <Menu.Item onPress={() => setShowModal(true)}>
             Create community
           </Menu.Item>
-          <Menu.Item onPress={() => console.log("Join Community")}>
+          <Menu.Item onPress={() => setDialogVisible(true)}>
             Join community
           </Menu.Item>
         </Menu>
       </Box>
       <CommunitiesList
-        marginTop="10"
+        marginTop="20"
         width="90%"
         data={data}
         refreshAction={() => fetchCommunities()}
       />
+      <Dialog.Container visible={dialogVisible}>
+        <Dialog.Title>Join Pronostic group</Dialog.Title>
+        <Dialog.Description>
+          <Center
+            w="100%"
+            paddingTop="5"
+            paddingBottom="0"
+            alignItems={"center"}
+            justifyContent="center"
+          >
+            <FormControl>
+              <Input
+                bgColor={"white"}
+                w={"100%"}
+                placeholder="Past the access code here"
+                type="text"
+                onChangeText={(val) => setAccessCode(val)}
+              />
+            </FormControl>
+          </Center>
+        </Dialog.Description>
+        <Dialog.Button label="Cancel" onPress={handleCancel} />
+        <Dialog.Button label="Submit" onPress={handleDialogSubmit} />
+      </Dialog.Container>
     </View>
   );
 };
@@ -261,6 +306,36 @@ const mappedActions = {
             status: errorData?.error.details?.status ?? 400,
             message:
               errorData?.error.details?.message ?? "Something went wrong",
+          })
+        );
+      }
+    },
+  submitAccessCode:
+    (userId: number, code: string, successCallback: () => void) =>
+    async (dispatch: Dispatch) => {
+      try {
+        dispatch(setCommunityLoading(true));
+        const joinResponse = await joinCommunity(userId, code);
+        if (joinResponse.data.id) {
+          const response = await findAllCommunities(userId);
+          dispatch(setCommunitiesData(response.data));
+        } else {
+          dispatch(
+            setCommunityFailed({
+              status: 404,
+              message: "Join request not allowed",
+            })
+          );
+        }
+        dispatch(setCommunityLoading(false));
+        successCallback();
+      } catch (e: any) {
+        const { data: errorData } = e;
+        dispatch(setCommunityLoading(false));
+        dispatch(
+          setCommunityFailed({
+            status: errorData?.error.status ?? 400,
+            message: errorData?.error.message ?? "Something went wrong",
           })
         );
       }

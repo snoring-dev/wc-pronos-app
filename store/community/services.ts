@@ -24,3 +24,18 @@ export const findAllCommunities = async (userId: number) => {
 
   return resp;
 };
+
+export const joinCommunity = async (userId: number, accessCode: string) => {
+  const resp = await request({
+    url: `/communities/join`,
+    method: "post",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: {
+      userId: userId,
+      access_code: accessCode,
+    },
+  });
+  return resp;
+};

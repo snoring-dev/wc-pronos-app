@@ -13,9 +13,9 @@ export const createCommunity = async (userId: number, data: any) => {
   return resp;
 };
 
-export const findAllCommunities = async () => {
+export const findAllCommunities = async (userId: number) => {
   const resp = await request({
-    url: `/communities/all`,
+    url: `/communities/all?userId=${userId}`,
     method: "get",
     headers: {
       "Content-Type": "application/json",

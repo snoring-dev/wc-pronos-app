@@ -73,7 +73,7 @@ const Community = ({
   };
 
   useEffect(() => {
-    fetchCommunities();
+    fetchCommunities(userId);
   }, []);
 
   return (
@@ -227,10 +227,10 @@ const mapStateToProps = (state: ApplicationState) => ({
 });
 
 const mappedActions = {
-  fetchCommunities: () => async (dispatch: Dispatch) => {
+  fetchCommunities: (userId: number) => async (dispatch: Dispatch) => {
     try {
       dispatch(setCommunityLoading(true));
-      const response = await findAllCommunities();
+      const response = await findAllCommunities(userId);
       dispatch(setCommunitiesData(response.data));
       dispatch(setCommunityLoading(false));
     } catch (e: any) {

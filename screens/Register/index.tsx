@@ -54,7 +54,7 @@ const Register = ({
   };
 
   const submitUser = () => {
-    createNewUser(user);
+    createNewUser(user, () => navigation.navigate(Pages.Home));
   };
 
   return (
@@ -136,7 +136,7 @@ const mapStateToProps = (state: ApplicationState) => ({
 });
 
 const mappedActions = {
-  createNewUser: (details: RegistrationData) => async (dispatch: Dispatch) => {
+  createNewUser: (details: RegistrationData, successCallback: () => void) => async (dispatch: Dispatch) => {
     dispatch(setUserData(details));
     try {
       const resp = await saveUser(details);
@@ -147,6 +147,9 @@ const mappedActions = {
       );
       dispatch(clearRegistration());
       dispatch(setAuthenticatedUser(resp.jwt, resp.user));
+      if (successCallback) {
+        successCallback();
+      }
     } catch (e: any) {
       const { data } = e;
       dispatch(

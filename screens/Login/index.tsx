@@ -169,7 +169,7 @@ const Login = ({
               }}
               onPress={(e) => {
                 e?.preventDefault();
-                submitCredentials();
+                navigation.navigate(Pages.Register);
               }}
             >
               Sign Up

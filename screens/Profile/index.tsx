@@ -32,7 +32,9 @@ const Profile = ({ profile, username, navigation }: Props) => {
         <Image
           borderRadius={100}
           source={{
-            uri: profile.picture.formats.medium.url,
+            uri:
+              profile?.picture?.formats?.medium?.url ??
+              "https://res.cloudinary.com/dfvv4obnz/image/upload/v1665395778/male_man_people_person_avatar_white_tone_icon_159363_1_87f21cf98f.png",
           }}
           alt={profile?.picture?.alternativeText ?? username}
           size={150}
@@ -46,27 +48,31 @@ const Profile = ({ profile, username, navigation }: Props) => {
           >
             @{username}
           </Text>
-          <Center>
-            <NBView
-              w="0.5"
-              h={6}
-              position="relative"
-              top="1"
-              backgroundColor="gray.200"
-              marginRight={2}
-              marginLeft={2}
-            />
-          </Center>
-          <Center>
-            <Image
-              alt={profile.preferred_team?.name ?? ""}
-              source={{ uri: profile.preferred_team?.flag }}
-              w={7}
-              h={5}
-              position="relative"
-              top="1"
-            />
-          </Center>
+          {profile?.preferred_team && (
+            <>
+              <Center>
+                <NBView
+                  w="0.5"
+                  h={6}
+                  position="relative"
+                  top="1"
+                  backgroundColor="gray.200"
+                  marginRight={2}
+                  marginLeft={2}
+                />
+              </Center>
+              <Center>
+                <Image
+                  alt={profile?.preferred_team?.name ?? ""}
+                  source={{ uri: profile?.preferred_team?.flag ?? "" }}
+                  w={7}
+                  h={5}
+                  position="relative"
+                  top="1"
+                />
+              </Center>
+            </>
+          )}
         </HStack>
       </Center>
       <VStack paddingTop={10} space={4} alignItems="center">
@@ -79,7 +85,7 @@ const Profile = ({ profile, username, navigation }: Props) => {
           alignItems="center"
         >
           <Text bold>First name:</Text>
-          <Text>{profile.firstname}</Text>
+          <Text>{profile?.firstname ?? "N/A"}</Text>
         </Box>
         <Box
           width="80%"
@@ -90,7 +96,7 @@ const Profile = ({ profile, username, navigation }: Props) => {
           alignItems="center"
         >
           <Text bold>Last name:</Text>
-          <Text>{profile.lastname}</Text>
+          <Text>{profile?.lastname ?? "N/A"}</Text>
         </Box>
         <Box
           width="80%"
@@ -102,7 +108,9 @@ const Profile = ({ profile, username, navigation }: Props) => {
         >
           <Text bold>Country:</Text>
           <Text>
-            {profile.country_from?.name} | {profile.country_from?.region}
+            {profile?.country_from
+              ? `${profile?.country_from?.name} | ${profile?.country_from?.region}`
+              : "N/A"}
           </Text>
         </Box>
         <Box
@@ -114,7 +122,11 @@ const Profile = ({ profile, username, navigation }: Props) => {
           alignItems="center"
         >
           <Text bold>Registration date:</Text>
-          <Text>{format(parseISO(profile.createdAt), "dd MMM yyyy")}</Text>
+          <Text>
+            {profile?.createdAt
+              ? format(parseISO(profile?.createdAt ?? ""), "dd MMM yyyy")
+              : "N/A"}
+          </Text>
         </Box>
         <Box paddingTop={50}>
           <Button

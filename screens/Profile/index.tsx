@@ -77,6 +77,7 @@ const Profile = ({ profile, username, navigation }: Props) => {
       </Center>
       <VStack paddingTop={10} space={4} alignItems="center">
         <Box
+          key="box-1"
           width="80%"
           paddingTop={2}
           paddingBottom={2}
@@ -88,6 +89,7 @@ const Profile = ({ profile, username, navigation }: Props) => {
           <Text>{profile?.firstname ?? "N/A"}</Text>
         </Box>
         <Box
+          key="box-2"
           width="80%"
           paddingTop={2}
           paddingBottom={2}
@@ -99,6 +101,7 @@ const Profile = ({ profile, username, navigation }: Props) => {
           <Text>{profile?.lastname ?? "N/A"}</Text>
         </Box>
         <Box
+          key="box-3"
           width="80%"
           paddingTop={2}
           paddingBottom={2}
@@ -114,6 +117,7 @@ const Profile = ({ profile, username, navigation }: Props) => {
           </Text>
         </Box>
         <Box
+          key="box-4"
           width="80%"
           paddingTop={2}
           paddingBottom={2}
@@ -128,7 +132,7 @@ const Profile = ({ profile, username, navigation }: Props) => {
               : "N/A"}
           </Text>
         </Box>
-        <Box paddingTop={50}>
+        <Box key="box-5" paddingTop={50}>
           <Button
             size="lg"
             colorScheme="blue"

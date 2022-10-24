@@ -11,6 +11,7 @@ import { ApplicationState } from "./store";
 import { configureStore } from "./store/configureStore";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from '@expo/vector-icons'; 
 import FlashMessage from "react-native-flash-message";
 import NewsFeed from "./screens/NewsFeed";
 import Matchs from "./screens/Matchs";
@@ -30,22 +31,22 @@ function MyTabs() {
       }}
     >
       <Tab.Screen
-        name="NewsFeed"
+        name="Overview"
         component={NewsFeed}
         options={{
-          tabBarLabel: "Home",
+          tabBarLabel: "Overview",
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="home" color={color} size={size} />
+            <Ionicons name="md-home" color={color} size={size} />
           ),
         }}
       />
       <Tab.Screen
-        name="Matchs"
+        name="Matches"
         component={Matchs}
         options={{
-          tabBarLabel: "Matchs",
+          tabBarLabel: "Matches",
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="bell" color={color} size={size} />
+            <Ionicons name="ios-football" size={size} color={color} />
           ),
         }}
       />
@@ -55,7 +56,7 @@ function MyTabs() {
         options={{
           tabBarLabel: "Community",
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="bell" color={color} size={size} />
+            <MaterialCommunityIcons name="gamepad-circle" color={color} size={size} />
           ),
         }}
       />

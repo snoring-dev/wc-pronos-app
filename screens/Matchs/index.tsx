@@ -1,10 +1,21 @@
-import { View, Text } from "react-native";
+import { Center, Container, ScrollView, View } from "native-base";
 import React from "react";
+import MatchEntry from "../../components/MatchEntry";
+import MatchTabs from "../../components/MatchTabs";
 
 const Matchs = () => {
   return (
     <View>
-      <Text>Matchs</Text>
+      <Center>
+        <Container>
+          <MatchTabs />
+        </Container>
+      </Center>
+      <ScrollView pt="5">
+        <MatchEntry />
+        <MatchEntry />
+        <MatchEntry />
+      </ScrollView>
     </View>
   );
 };

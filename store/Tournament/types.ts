@@ -5,6 +5,15 @@ export interface Team {
   name: string;
   country_code: string;
   flag: string;
+  badge?: string;
+}
+
+export interface Table {
+  wins: number;
+  draws: number;
+  losses: number;
+  points: number;
+  team: Team;
 }
 
 export interface Group {
@@ -12,6 +21,7 @@ export interface Group {
   type: string;
   label: string;
   teams: Team[];
+  table: Table[];
 }
 
 export interface TournamentState {

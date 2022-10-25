@@ -43,6 +43,14 @@ export const configureStore = (): Store<ApplicationState> => {
       },
       isLoading: false,
     },
+    matches: {
+      data: [],
+      isLoading: false,
+      failure: {
+        status: 200,
+        message: "",
+      },
+    },
   };
 
   const middlewares = [thunk];

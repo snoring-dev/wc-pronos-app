@@ -4,8 +4,15 @@ import CenteredImage from "../../components/CenteredImage";
 import { AllGroups } from "./styles";
 import GroupTable from "../../components/GroupTable";
 import { ScrollView } from "native-base";
+import { connect } from "react-redux";
+import { ApplicationState } from "../../store";
+import { Group, TournamentState } from "../../store/Tournament/types";
 
-const NewsFeed = () => {
+interface OwnProps {
+  tournament: TournamentState;
+}
+
+const NewsFeed = ({ tournament }: OwnProps) => {
   return (
     <ScrollView>
       <CenteredImage
@@ -13,13 +20,16 @@ const NewsFeed = () => {
         source="https://res.cloudinary.com/dfvv4obnz/image/upload/v1665942273/2022_FIFA_World_Cup_yooqkp.svg"
       />
       <AllGroups>
-        <GroupTable />
-        <GroupTable />
-        <GroupTable />
-        <GroupTable />
+        {tournament.groups?.map((gr: Group) => (
+          <GroupTable key={`grp-${gr.id}`} data={gr} />
+        ))}
       </AllGroups>
     </ScrollView>
   );
 };
 
-export default NewsFeed;
+const mapStateToProps = (state: ApplicationState) => ({
+  tournament: state?.tournament ?? null,
+});
+
+export default connect(mapStateToProps)(NewsFeed);

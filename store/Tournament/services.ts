@@ -21,6 +21,16 @@ export const getTournamentData = async () => {
             name: team.attributes.name,
             country_code: team.attributes.country_code,
             flag: team.attributes.flag.data.attributes.url,
+            badge: team.attributes.badge,
+        })),
+        table: group.attributes.table.data.attributes.entries.data.map((tableEntry: any) => ({
+          wins: tableEntry.attributes.wins,
+          draws: tableEntry.attributes.draws,
+          losses: tableEntry.attributes.losses,
+          points: tableEntry.attributes.points,
+          team: {
+            ...tableEntry.attributes.team.data.attributes,
+          },
         })),
     })),
   };

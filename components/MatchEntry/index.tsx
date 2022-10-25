@@ -1,8 +1,15 @@
 import React from "react";
 import { Center, HStack, Image, Pressable, Text, View } from "native-base";
 import { Container, LiveLabel } from "./styles";
+import { Match } from "../../store/Matchs/types";
+import format from "date-fns/format";
+import { parseISO } from "date-fns";
 
-const MatchEntry = () => {
+interface Props {
+  data: Match;
+}
+
+const MatchEntry = ({ data }: Props) => {
   return (
     <Pressable>
       <Container>
@@ -22,25 +29,25 @@ const MatchEntry = () => {
             borderRadius={5}
           >
             <Text color="gray.500" fontSize="2xs">
-              7 Nov, 14:00 PM
+              {format(parseISO(data.played_at), "d LLL, HH:mm")}
             </Text>
           </View>
         </Center>
         <Center mt={3} mb={3}>
           <HStack alignItems={"center"}>
             <HStack alignItems={"center"}>
-              <Text color={"black"} pr={2}>Saudi Arabia</Text>
+              <Text color={"black"} pr={2}>{data.left_side.name}</Text>
               <Image
                 alt="flag"
                 width={7}
                 height={7}
                 source={{
-                  uri: "https://cdn-team-logos.theathletic.com/cdn-cgi/image/width=1920,format=auto/https://cdn-team-logos.theathletic.com/team-logo-1192-72x72.png",
+                  uri: data.left_side.badge,
                 }}
               />
             </HStack>
             <View pl={3} pr={3}>
-              <Text fontSize="xl" color="#8a8d95">0 - 0</Text>
+              <Text fontSize="xl" color="#8a8d95">{data.final_score_string}</Text>
             </View>
             <HStack alignItems={"center"}>
               <Image
@@ -48,16 +55,16 @@ const MatchEntry = () => {
                 width={7}
                 height={7}
                 source={{
-                  uri: "https://cdn-team-logos.theathletic.com/cdn-cgi/image/width=1920,format=auto/https://cdn-team-logos.theathletic.com/team-logo-1192-72x72.png",
+                  uri: data.right_side.badge,
                 }}
               />
-              <Text color={"black"} pl={2}>Saudi Arabia</Text>
+              <Text color={"black"} pl={2}>{data.right_side.name}</Text>
             </HStack>
           </HStack>
         </Center>
         <Center mb={3}>
             <Text fontSize="15" color="#8a8d95">
-                King Power Stadium
+              {data.title}
             </Text>
         </Center>
       </Container>

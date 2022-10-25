@@ -34,6 +34,8 @@ import {
   setTournamentData,
   setTournamentFailed,
 } from "../../store/Tournament/actions";
+import { getMatchsData } from "../../store/Matchs/services";
+import { setMatchesData, setMatchesFailed } from "../../store/Matchs/actions";
 
 interface Credentials {
   identifier?: string;
@@ -45,6 +47,7 @@ interface LoginComponentProps {
   error: FailureState;
   performLogin: any;
   loadTournamentData: any;
+  loadMatchesData: any;
   jwt?: string;
 }
 
@@ -56,9 +59,9 @@ const Login = ({
   error,
   performLogin,
   loadTournamentData,
+  loadMatchesData,
   jwt = "",
 }: Props) => {
-
   const [credentials, setCredentials] = useState({
     identifier: "",
     password: "",
@@ -69,11 +72,12 @@ const Login = ({
   };
 
   useEffect(() => {
-    if (jwt !== '') {
+    if (jwt !== "") {
       navigation.navigate("Home", { screen: "Profile" });
     }
-    
+
     loadTournamentData();
+    loadMatchesData();
   }, []);
 
   const submitCredentials = () => {
@@ -223,9 +227,24 @@ const mappedActions = {
       const tournament = await getTournamentData();
       dispatch(setTournamentData(tournament));
     } catch (e: any) {
+      console.log(e);
       const { data } = e;
       dispatch(
         setTournamentFailed({
+          status: data?.error?.status ?? 400,
+          message: data?.error?.message ?? "Something went wrong",
+        })
+      );
+    }
+  },
+  loadMatchesData: () => async (dispatch: Dispatch) => {
+    try {
+      const matches = await getMatchsData();
+      dispatch(setMatchesData(matches));
+    } catch (e: any) {
+      const { data } = e;
+      dispatch(
+        setMatchesFailed({
           status: data?.error?.status ?? 400,
           message: data?.error?.message ?? "Something went wrong",
         })

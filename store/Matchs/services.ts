@@ -3,7 +3,7 @@ import { Match, MatchsResponse } from "./types";
 
 export const getMatchsData = async (): Promise<Match[]> => {
   const resp: MatchsResponse = await request({
-    url: `/matches`,
+    url: `/matches?populate=deep`,
     method: "GET",
   });
 

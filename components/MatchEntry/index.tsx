@@ -7,17 +7,21 @@ import { parseISO } from "date-fns";
 
 interface Props {
   data: Match;
+  onClick?: any;
 }
 
-const MatchEntry = ({ data }: Props) => {
+const MatchEntry = ({ data, onClick = () => {} }: Props) => {
+  const { is_live = false } = data;
   return (
-    <Pressable>
+    <Pressable onPress={onClick}>
       <Container>
-        <LiveLabel>
-          <Text bold fontSize="xs" textTransform="uppercase" color={"white"}>
-            live
-          </Text>
-        </LiveLabel>
+        {is_live && (
+          <LiveLabel>
+            <Text bold fontSize="xs" textTransform="uppercase" color={"white"}>
+              live
+            </Text>
+          </LiveLabel>
+        )}
         <Center>
           <View
             backgroundColor="gray.100"
@@ -36,7 +40,9 @@ const MatchEntry = ({ data }: Props) => {
         <Center mt={3} mb={3}>
           <HStack alignItems={"center"}>
             <HStack alignItems={"center"}>
-              <Text color={"black"} pr={2}>{data.left_side.name}</Text>
+              <Text color={"black"} pr={2} fontWeight="semibold" fontSize="16">
+                {data.left_side.country_code}
+              </Text>
               <Image
                 alt="flag"
                 width={7}
@@ -47,7 +53,9 @@ const MatchEntry = ({ data }: Props) => {
               />
             </HStack>
             <View pl={3} pr={3}>
-              <Text fontSize="xl" color="#8a8d95">{data.final_score_string}</Text>
+              <Text fontSize="xl" color="#8a8d95">
+                {data.final_score_string}
+              </Text>
             </View>
             <HStack alignItems={"center"}>
               <Image
@@ -58,14 +66,16 @@ const MatchEntry = ({ data }: Props) => {
                   uri: data.right_side.badge,
                 }}
               />
-              <Text color={"black"} pl={2}>{data.right_side.name}</Text>
+              <Text color={"black"} pl={2} fontWeight="semibold" fontSize="16">
+                {data.right_side.country_code}
+              </Text>
             </HStack>
           </HStack>
         </Center>
         <Center mb={3}>
-            <Text fontSize="15" color="#8a8d95">
-              {data.title}
-            </Text>
+          <Text fontSize="15" color="#8a8d95">
+            {data.title}
+          </Text>
         </Center>
       </Container>
     </Pressable>

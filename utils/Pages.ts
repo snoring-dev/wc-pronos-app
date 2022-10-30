@@ -3,6 +3,7 @@ export enum Pages {
   Register = "Register",
   Home = "Home",
   EditProfile = "EditProfile",
+  MatchView = "MatchView",
 };
 
 export type RootStackParamList = {
@@ -10,4 +11,5 @@ export type RootStackParamList = {
   Register: undefined;
   Home: undefined;
   EditProfile: undefined;
+  MatchView: undefined;
 };

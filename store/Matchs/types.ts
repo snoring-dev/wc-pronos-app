@@ -43,6 +43,7 @@ export interface Match {
   left_side: LeftSide;
   right_side: RightSide;
   predictions: any[];
+  is_live?: boolean;
 }
 
 export interface MatchsResponse {

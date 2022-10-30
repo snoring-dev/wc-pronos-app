@@ -51,6 +51,11 @@ export const configureStore = (): Store<ApplicationState> => {
         message: "",
       },
     },
+    userSelection: {
+      isLoading: false,
+      match: undefined,
+      community: undefined,
+    },
   };
 
   const middlewares = [thunk];

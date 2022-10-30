@@ -247,7 +247,6 @@ const mappedActions = {
     dispatch(setAuthLoading(true));
     try {
       const resp = await updateProfileData(id, data);
-      console.log("profile =>", resp);
       dispatch(setUpdatedProfileData(resp.data.attributes));
     } catch (e: any) {
       const { data: errorData } = e;

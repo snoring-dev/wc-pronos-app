@@ -227,7 +227,6 @@ const mappedActions = {
       const tournament = await getTournamentData();
       dispatch(setTournamentData(tournament));
     } catch (e: any) {
-      console.log(e);
       const { data } = e;
       dispatch(
         setTournamentFailed({

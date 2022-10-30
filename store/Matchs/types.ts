@@ -1,11 +1,13 @@
 import { FailureState } from "../../types";
+import { Media } from "../Auth/types";
 
-interface Player {
+export interface Player {
   id: number;
   fullname: string;
   createdAt: Date;
   updatedAt: Date;
   shirt_number: number;
+  media: Media[];
 }
 
 interface LeftSide {

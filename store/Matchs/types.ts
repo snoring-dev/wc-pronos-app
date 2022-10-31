@@ -1,6 +1,31 @@
 import { FailureState } from "../../types";
 import { Media } from "../Auth/types";
 
+export interface ProviderMetadata {
+    public_id: string;
+    resource_type: string;
+}
+
+export interface Flag {
+    id: number;
+    name: string;
+    alternativeText: string;
+    caption: string;
+    width: number;
+    height: number;
+    formats?: any;
+    hash: string;
+    ext: string;
+    mime: string;
+    size: number;
+    url: string;
+    previewUrl?: any;
+    provider: string;
+    provider_metadata: ProviderMetadata;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
 export interface Player {
   id: number;
   fullname: string;
@@ -19,6 +44,7 @@ interface LeftSide {
   country_code: string;
   badge: string;
   players: Player[];
+  flag: Flag;
 }
 
 interface RightSide {
@@ -30,6 +56,7 @@ interface RightSide {
   country_code: string;
   badge: string;
   players: Player[];
+  flag: Flag;
 }
 
 export interface Match {

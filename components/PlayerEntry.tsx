@@ -40,7 +40,7 @@ const PlayerEntry = ({ p, selected = false, onClick = () => {} }: Props) => {
           />
           <VStack pl="15px" justifyContent="center" alignItems="flex-start">
             <Text>
-              {p.fullname.split(" ")[0]} {p.fullname.split(" ")[1]}
+              {p.fullname.split(" ")[0]} {p.fullname.split(" ")[1]} {p.fullname.split(" ")[2] ?? ''}
             </Text>
             <HStack justifyContent="center" alignItems="center">
               <Text fontSize="10px" textTransform="uppercase" color="blue.500">
@@ -66,14 +66,15 @@ const PlayerEntry = ({ p, selected = false, onClick = () => {} }: Props) => {
         </HStack>
 
         <HStack justifyContent="center" alignItems="center">
-          <Text fontWeight="semibold" fontSize="14" color="black">
+          <Text fontWeight="semibold" fontSize="14" color="black" pr="5px">
             {p.teamName}
           </Text>
           <Image
             alt={p.teamName}
-            height="35px"
-            width="35px"
+            height="20px"
+            width="30px"
             source={{ uri: p?.teamImg }}
+            borderRadius="5px"
           />
         </HStack>
       </HStack>

@@ -1,7 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ApplicationState } from "../../store";
 import { connect } from "react-redux";
-import { Match, Player, Prediction } from "../../store/Matchs/types";
+import {
+  Match,
+  Player,
+  Prediction,
+  SinglePrediction,
+} from "../../store/Matchs/types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../utils/Pages";
 import { SafeAreaView } from "react-native";
@@ -56,6 +61,25 @@ const MatchView = ({
   const [rightScore, setRightScore] = useState(0);
   const [winnerId, setWinnerId] = useState(0);
   const [playerId, setPlayerId] = useState(0);
+  const [hasPredicted, setHasPredicted] = useState(false);
+
+  useEffect(() => {
+    const pronoIndex: number =
+      selectedMatch?.predictions.findIndex(
+        (p: SinglePrediction) => p.owner.id === userId
+      ) ?? -1;
+    if (pronoIndex !== -1) {
+      const pronostic: SinglePrediction | null =
+        selectedMatch?.predictions[pronoIndex] ?? null;
+      if (pronostic) {
+        setWinnerId(pronostic.first_team_to_score);
+        setPlayerId(pronostic.first_player_to_score);
+        setLeftScore(pronostic.predicted_result.leftSide);
+        setRightScore(pronostic.predicted_result.rightSide);
+        setHasPredicted(true);
+      }
+    }
+  }, [selectedMatch]);
 
   const submitData = () => {
     const prono: Prediction = {
@@ -202,6 +226,7 @@ const MatchView = ({
       <PlayersList
         data={allPlayers}
         onPlayerChanged={(id: number) => setPlayerId(id)}
+        currentIndex={playerId}
       />
       {/* -------------- Submit button -------------- */}
       <Center w="100%" pl="15px" pr="15px" pt="10px">
@@ -211,6 +236,7 @@ const MatchView = ({
           onPress={submitData}
           isLoading={isLoading}
           isLoadingText="Hold on..."
+          disabled={selectedMatch?.finished ?? false}
         >
           <Text
             color="white"
@@ -218,7 +244,7 @@ const MatchView = ({
             fontWeight="semibold"
             textTransform="uppercase"
           >
-            Send prediction
+            {hasPredicted ? 'Update your prediction' : 'Send prediction'}
           </Text>
         </Button>
       </Center>

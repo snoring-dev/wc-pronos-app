@@ -6,6 +6,7 @@ import { Center, Icon, Input, ScrollView, View } from "native-base";
 import { nanoid } from "nanoid";
 import PlayerEntry from "../../components/PlayerEntry";
 import { filter, isEmpty } from "ramda";
+import { useEffect } from "react";
 
 type SPlayer = Player & {
   teamName: string;
@@ -14,14 +15,19 @@ type SPlayer = Player & {
 
 interface OwnProps {
   data: SPlayer[];
+  currentIndex?: number;
   onPlayerChanged?: (id: number) => void;
 }
 
 type Props = OwnProps;
 
-const PlayersList = ({ data, onPlayerChanged = (id: number) => {} }: Props) => {
+const PlayersList = ({ data, currentIndex = 0, onPlayerChanged = (id: number) => {} }: Props) => {
   const [players, setPlayers] = React.useState<SPlayer[]>(data ?? []);
-  const [selectedPlayerId, setSelectedPlayerId] = React.useState(0);
+  const [selectedPlayerId, setSelectedPlayerId] = React.useState(currentIndex);
+
+  useEffect(() => {
+    setSelectedPlayerId(currentIndex);
+  }, [currentIndex]);
 
   const filterPlayers = useCallback((token: string) => {
     let filtered = [];

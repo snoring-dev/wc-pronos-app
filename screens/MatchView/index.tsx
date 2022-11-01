@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ApplicationState } from "../../store";
 import { connect } from "react-redux";
-import { Match, Player } from "../../store/Matchs/types";
+import { Match, Player, Prediction } from "../../store/Matchs/types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../utils/Pages";
 import { SafeAreaView } from "react-native";
@@ -18,6 +18,16 @@ import {
   Button,
   Center,
 } from "native-base";
+import { Dispatch } from "redux";
+import { getMatchsData, setPrediction } from "../../store/Matchs/services";
+import {
+  setMatchesData,
+  setMatchesFailed,
+  setMatchesLoading,
+} from "../../store/Matchs/actions";
+import { setSelectedMatch } from "../../store/UserSelection/actions";
+import LottieView from "lottie-react-native";
+import LoadingView from "../../components/LoadingView";
 
 type SPlayer = Player & {
   teamName: string;
@@ -28,22 +38,20 @@ interface OwnProps {
   selectedMatch?: Match;
   userId: number;
   allPlayers: SPlayer[];
-}
-
-interface Prediction {
-  userId: number;
-  matchId: number;
-  predictedResult: {
-    leftSide: number;
-    rightSide: number;
-  };
-  firstTeamToScore: number;
-  firstPlayerToScore: number;
+  savePrediction: any;
+  isLoading: boolean;
 }
 
 type Props = OwnProps & NativeStackScreenProps<RootStackParamList>;
 
-const MatchView = ({ navigation, userId, selectedMatch, allPlayers }: Props) => {
+const MatchView = ({
+  navigation,
+  userId,
+  selectedMatch,
+  allPlayers,
+  savePrediction,
+  isLoading,
+}: Props) => {
   const [leftScore, setLeftScore] = useState(0);
   const [rightScore, setRightScore] = useState(0);
   const [winnerId, setWinnerId] = useState(0);
@@ -61,8 +69,17 @@ const MatchView = ({ navigation, userId, selectedMatch, allPlayers }: Props) => 
       firstTeamToScore: winnerId,
     };
 
-    console.log('PRED =>', prono);
+    savePrediction(prono);
   };
+
+  if (isLoading) {
+    const file = "https://assets3.lottiefiles.com/packages/lf20_kxsd2ytq.json";
+    return (
+      <SafeAreaView>
+        <LoadingView />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView>
@@ -192,7 +209,7 @@ const MatchView = ({ navigation, userId, selectedMatch, allPlayers }: Props) => 
           w="100%"
           colorScheme="indigo"
           onPress={submitData}
-          isLoading={false}
+          isLoading={isLoading}
           isLoadingText="Hold on..."
         >
           <Text
@@ -212,9 +229,38 @@ const MatchView = ({ navigation, userId, selectedMatch, allPlayers }: Props) => 
 const mapStateToProps = (state: ApplicationState) => ({
   selectedMatch: state?.userSelection?.match,
   userId: state?.auth?.user?.id,
+  isLoading: state?.matches?.isLoading ?? false,
 });
 
-const actions = {};
+const actions = {
+  savePrediction: (prono: Prediction) => async (dispatch: Dispatch) => {
+    try {
+      dispatch(setMatchesLoading(true));
+      const resp: any = await setPrediction(prono);
+      if (resp.id && resp.match_id) {
+        const allMatches = await getMatchsData();
+        const selectedMatchIndex = allMatches.findIndex(
+          (m: Match) => m.id === resp.match_id
+        );
+        dispatch(setMatchesData(allMatches));
+        if (selectedMatchIndex !== -1) {
+          dispatch(setSelectedMatch(allMatches[selectedMatchIndex]));
+        }
+      }
+      dispatch(setMatchesLoading(false));
+    } catch (e: any) {
+      const { data } = e;
+      console.log(e);
+      dispatch(setMatchesLoading(false));
+      dispatch(
+        setMatchesFailed({
+          status: data?.error?.status ?? 400,
+          message: data?.error?.message ?? "Something went wrong",
+        })
+      );
+    }
+  },
+};
 
 const mergedProps = (
   stateProps: OwnProps,

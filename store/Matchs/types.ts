@@ -1,6 +1,17 @@
 import { FailureState } from "../../types";
 import { Media } from "../Auth/types";
 
+export interface Prediction {
+  userId: number;
+  matchId: number;
+  predictedResult: {
+    leftSide: number;
+    rightSide: number;
+  };
+  firstTeamToScore: number;
+  firstPlayerToScore: number;
+}
+
 export interface ProviderMetadata {
     public_id: string;
     resource_type: string;

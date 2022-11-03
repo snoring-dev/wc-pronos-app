@@ -1,6 +1,19 @@
 import { FailureState } from "../../types";
 import { User } from "../Auth/types";
 
+export interface UserScore {
+  id: number;
+  value: number;
+}
+
+export interface UserScoreRanking {
+  id: number;
+	previous_ranking: number;
+	current_ranking: number;
+  score: UserScore;
+  user: User;
+}
+
 export interface Community {
   id: number;
   name: string;
@@ -8,6 +21,8 @@ export interface Community {
   access_code: string;
   createdAt: string;
   users?: User[];
+  is_private?: boolean;
+  user_score_communities?: UserScoreRanking[];
 }
 
 export interface CommunityState {

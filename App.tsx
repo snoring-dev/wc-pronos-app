@@ -19,6 +19,7 @@ import Profile from "./screens/Profile";
 import Community from "./screens/Community";
 import EditProfile from "./screens/EditProfile";
 import MatchView from "./screens/MatchView";
+import CommunityView from "./screens/CommunityView";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -117,6 +118,11 @@ export default function App() {
             <Stack.Screen
               name={Pages.MatchView}
               component={MatchView}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name={Pages.CommunityView}
+              component={CommunityView}
               options={{ headerShown: false }}
             />
             <Stack.Screen

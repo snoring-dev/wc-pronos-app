@@ -4,6 +4,7 @@ export enum Pages {
   Home = "Home",
   EditProfile = "EditProfile",
   MatchView = "MatchView",
+  CommunityView = "CommunityView",
 };
 
 export type RootStackParamList = {
@@ -12,4 +13,5 @@ export type RootStackParamList = {
   Home: undefined;
   EditProfile: undefined;
   MatchView: undefined;
+  CommunityView: undefined;
 };

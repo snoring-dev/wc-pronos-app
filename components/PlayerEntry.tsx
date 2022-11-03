@@ -14,6 +14,11 @@ interface Props {
 }
 
 const PlayerEntry = ({ p, selected = false, onClick = () => {} }: Props) => {
+  const { media } = p;
+  const playerImg =
+    media?.length > 0 && media[0]
+      ? media[0]?.url
+      : `https://res.cloudinary.com/dfvv4obnz/image/upload/v1667407597/607445_cdhozi.png`;
   return (
     <Pressable onPress={onClick}>
       <HStack
@@ -30,7 +35,9 @@ const PlayerEntry = ({ p, selected = false, onClick = () => {} }: Props) => {
       >
         <HStack justifyContent="center" alignItems="center">
           <Image
-            source={{ uri: p.media[0].url }}
+            source={{
+              uri: playerImg,
+            }}
             height="40px"
             width="40px"
             borderRadius="100"
@@ -40,7 +47,8 @@ const PlayerEntry = ({ p, selected = false, onClick = () => {} }: Props) => {
           />
           <VStack pl="15px" justifyContent="center" alignItems="flex-start">
             <Text>
-              {p.fullname.split(" ")[0]} {p.fullname.split(" ")[1]} {p.fullname.split(" ")[2] ?? ''}
+              {p.fullname.split(" ")[0]} {p.fullname.split(" ")[1]}{" "}
+              {p.fullname.split(" ")[2] ?? ""}
             </Text>
             <HStack justifyContent="center" alignItems="center">
               <Text fontSize="10px" textTransform="uppercase" color="blue.500">
@@ -56,7 +64,7 @@ const PlayerEntry = ({ p, selected = false, onClick = () => {} }: Props) => {
                 justifyContent="center"
               >
                 <Text fontSize="9px" color="blue.500">
-                  {Number(p.shirt_number) < 10
+                  {Number(p?.shirt_number ?? 0) < 10
                     ? `0${Number(p.shirt_number)}`
                     : Number(p.shirt_number)}
                 </Text>

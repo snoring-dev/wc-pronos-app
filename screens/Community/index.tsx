@@ -31,13 +31,17 @@ import {
 import {
   createCommunity,
   findAllCommunities,
+  findCommunityDetails,
   joinCommunity,
 } from "../../store/community/services";
 import { Community as CommunityType } from "../../store/community/types";
 import { FailureState } from "../../types";
 import { makeid } from "../../utils";
-import { RootStackParamList } from "../../utils/Pages";
+import { Pages, RootStackParamList } from "../../utils/Pages";
 import { CommunitiesList } from "../../components/CommunitiesList";
+import LoadingView from "../../components/LoadingView";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { setSelectedCommunity } from "../../store/UserSelection/actions";
 
 interface OwnProps {
   userId: number;
@@ -47,6 +51,7 @@ interface OwnProps {
   submitCommunityData: any;
   fetchCommunities: any;
   submitAccessCode: any;
+  getCommunityDetails: any;
 }
 
 type Props = OwnProps & NativeStackScreenProps<RootStackParamList>;
@@ -60,6 +65,7 @@ const Community = ({
   fetchCommunities = () => {},
   submitCommunityData = () => {},
   submitAccessCode = () => {},
+  getCommunityDetails = () => {},
 }: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [communityData, setCommunityData] = useState({
@@ -96,6 +102,14 @@ const Community = ({
   useEffect(() => {
     fetchCommunities(userId);
   }, []);
+
+  if (isLoading) {
+    return (
+      <SafeAreaView>
+        <LoadingView />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <View position="relative">
@@ -234,7 +248,12 @@ const Community = ({
         marginTop="20"
         width="90%"
         data={data}
-        refreshAction={() => fetchCommunities()}
+        refreshAction={() => fetchCommunities(userId)}
+        onListItemClicked={(community: CommunityType) =>
+          getCommunityDetails(community, () =>
+            navigation.navigate(Pages.CommunityView)
+          )
+        }
       />
       <Dialog.Container visible={dialogVisible}>
         <Dialog.Title>Join Pronostic group</Dialog.Title>
@@ -329,6 +348,38 @@ const mappedActions = {
         }
         dispatch(setCommunityLoading(false));
         successCallback();
+      } catch (e: any) {
+        const { data: errorData } = e;
+        dispatch(setCommunityLoading(false));
+        dispatch(
+          setCommunityFailed({
+            status: errorData?.error.status ?? 400,
+            message: errorData?.error.message ?? "Something went wrong",
+          })
+        );
+      }
+    },
+  getCommunityDetails:
+    (community: CommunityType, nextScreen: () => void) =>
+    async (dispatch: Dispatch) => {
+      try {
+        dispatch(setCommunityLoading(true));
+        const resp = await findCommunityDetails(community.id);
+        dispatch(
+          setSelectedCommunity({
+            id: resp.data.id,
+            name: resp.data.name,
+            winning_prize: resp.data.winning_prize,
+            access_code: resp.data.access_code,
+            createdAt: resp.data.createdAt,
+            users: resp.data.users,
+            is_private: resp.data?.is_private ?? false,
+            user_score_communities: resp.data.user_score_communities,
+          })
+        );
+        console.log("Selected:", resp);
+        dispatch(setCommunityLoading(false));
+        if (nextScreen) nextScreen();
       } catch (e: any) {
         const { data: errorData } = e;
         dispatch(setCommunityLoading(false));

@@ -50,7 +50,7 @@ const Profile = ({ profile, username, navigation }: Props) => {
           </Text>
           {profile?.preferred_team && (
             <>
-              <Center>
+              <Center key="center-1">
                 <NBView
                   w="0.5"
                   h={6}
@@ -61,7 +61,7 @@ const Profile = ({ profile, username, navigation }: Props) => {
                   marginLeft={2}
                 />
               </Center>
-              <Center>
+              <Center key="center-2">
                 <Image
                   alt={profile?.preferred_team?.name ?? ""}
                   source={{ uri: profile?.preferred_team?.flag ?? "" }}
@@ -132,17 +132,29 @@ const Profile = ({ profile, username, navigation }: Props) => {
               : "N/A"}
           </Text>
         </Box>
-        <Box key="box-5" paddingTop={50}>
-          <Button
-            size="lg"
-            colorScheme="blue"
-            variant="subtle"
-            onPress={() => {
-              navigation.navigate("EditProfile");
-            }}
-          >
-            Edit your profile
-          </Button>
+        <Box key="box-5" paddingTop={50} w="70%">
+          <HStack w="100%" justifyContent="space-between" alignItems="center">
+            <Button
+              size="lg"
+              colorScheme="blue"
+              variant="subtle"
+              onPress={() => {
+                navigation.navigate("EditProfile");
+              }}
+            >
+              Edit your profile
+            </Button>
+            <Button
+              colorScheme="warmGray"
+              size="lg"
+              variant="outline"
+              onPress={() => {
+                navigation.navigate("Login");
+              }}
+            >
+              Disconnect
+            </Button>
+          </HStack>
         </Box>
       </VStack>
     </View>

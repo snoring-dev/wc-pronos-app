@@ -10,6 +10,7 @@ import {
   Image,
 } from "native-base";
 import { Group, Table } from "../../store/Tournament/types";
+import { nanoid } from "nanoid";
 
 interface Props {
   data: Group;
@@ -47,6 +48,7 @@ const GroupTable = ({ data }: Props) => {
             pl="1"
             borderBottomWidth={index < data.table.length - 1 ? 1 : 0}
             borderBottomColor={"gray.100"}
+            key={nanoid()}
           >
             <Column w="3/6">
               <HStack alignItems="center" justifyContent={"flex-start"}>

@@ -160,7 +160,9 @@ const CommunityView = ({ selectedCommunity }: Props) => {
                     borderWidth={1}
                     size="30px"
                     source={{
-                      uri: ranking.user.profile.picture.formats.thumbnail.url,
+                      uri:
+                        ranking.user?.profile?.picture?.formats?.medium?.url ??
+                        "https://res.cloudinary.com/dfvv4obnz/image/upload/v1665395778/male_man_people_person_avatar_white_tone_icon_159363_1_87f21cf98f.png",
                     }}
                   />
                   <VStack justifyContent="center">
@@ -170,8 +172,9 @@ const CommunityView = ({ selectedCommunity }: Props) => {
                       fontSize="10px"
                       pl="10px"
                     >
-                      {ranking.user.profile.firstname}{" "}
-                      {ranking.user.profile.lastname}
+                      {ranking.user.profile
+                        ? `${ranking.user?.profile?.firstname} ${ranking.user?.profile?.lastname}`
+                        : ranking.user.email}
                     </Text>
                     <Text
                       pl="10px"

@@ -1,10 +1,9 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Center, Container, ScrollView, View } from "native-base";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import MatchEntry from "../../components/MatchEntry";
-import MatchTabs from "../../components/MatchTabs";
+import SlidingTabs from "../../components/SlidingTabs";
 import { ApplicationState } from "../../store";
 import { Match } from "../../store/Matchs/types";
 import { setSelectedMatch } from "../../store/UserSelection/actions";
@@ -17,17 +16,9 @@ interface OwnProps {
 
 type Props = OwnProps & NativeStackScreenProps<RootStackParamList>;
 
-enum TABS {
-  CURRENT = 1,
-  OLD = 2,
-}
-
 const Matchs = ({ navigation, data, onMatchSelected = () => {} }: Props) => {
   const [oldMatches, setOldMatches] = useState<Match[]>([]);
   const [newMatches, setNewMatches] = useState<Match[]>([]);
-  const [activeTab, setActiveTab] = useState(TABS.CURRENT);
-
-  const switchTab = (index: number) => setActiveTab(index);
 
   useEffect(() => {
     setOldMatches([...Object.values(data)].filter((m: Match) => m.isOld));
@@ -57,17 +48,12 @@ const Matchs = ({ navigation, data, onMatchSelected = () => {} }: Props) => {
   ));
 
   return (
-    <View paddingBottom="75">
-      <Center pb="5">
-        <Container>
-          <MatchTabs onTabChanged={switchTab} activeTab={activeTab} />
-        </Container>
-      </Center>
-      <ScrollView pt="5" pb={10}>
-        {activeTab === TABS.CURRENT ? newMatchesList : oldMatchesList}
-        <View h={50} bgColor="transparent" />
-      </ScrollView>
-    </View>
+    <SlidingTabs
+      firstTabTitle="Upcoming matches"
+      secondTabTitle="Old Matches"
+      firstTabContent={newMatchesList}
+      secondTabContent={oldMatchesList}
+    />
   );
 };
 

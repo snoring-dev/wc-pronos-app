@@ -5,7 +5,8 @@ export enum Pages {
   EditProfile = "EditProfile",
   MatchView = "MatchView",
   CommunityView = "CommunityView",
-};
+  SplashScreen = "SplashScreen",
+}
 
 export type RootStackParamList = {
   Login: undefined;
@@ -14,4 +15,5 @@ export type RootStackParamList = {
   EditProfile: undefined;
   MatchView: undefined;
   CommunityView: undefined;
+  SplashScreen: undefined;
 };

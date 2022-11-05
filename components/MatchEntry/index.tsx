@@ -13,8 +13,8 @@ interface Props {
 const MatchEntry = ({ data, onClick = () => {} }: Props) => {
   const { is_live = false } = data;
   return (
-    <Pressable onPress={onClick}>
-      <Container>
+    <Pressable onPress={onClick} w="100%">
+      <Container w="100%">
         {is_live && (
           <LiveLabel>
             <Text bold fontSize="xs" textTransform="uppercase" color={"white"}>
@@ -22,13 +22,11 @@ const MatchEntry = ({ data, onClick = () => {} }: Props) => {
             </Text>
           </LiveLabel>
         )}
-        <Center>
+        <Center w="100%">
           <View
             backgroundColor="gray.100"
-            pt={1}
-            pb={1}
-            pl={2}
-            pr={2}
+            py={1}
+            px={2}
             mt={5}
             borderRadius={5}
           >

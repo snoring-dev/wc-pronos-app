@@ -66,6 +66,11 @@ function reducer(state: AuthState = initialState, action: AnyAction) {
         },
       };
     }
+    case AuthActionTypes.RESET_AUTH: {
+      return {
+        ...initialState,
+      };
+    }
     default: {
       return state;
     }

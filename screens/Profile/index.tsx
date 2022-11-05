@@ -17,15 +17,20 @@ import {
 } from "native-base";
 import format from "date-fns/format";
 import { parseISO } from "date-fns";
+import { Dispatch } from "redux";
+import { resetAuth } from "../../store/Auth/actions";
+import { deleteKey } from "../../utils";
+import { Constants } from "../../utils/Constants";
 
 interface ProfileComponentProps {
   profile: ProfileType;
   username: string;
+  getDisconnected: (callback: () => void) => any;
 }
 
 type Props = ProfileComponentProps & NativeStackScreenProps<RootStackParamList>;
 
-const Profile = ({ profile, username, navigation }: Props) => {
+const Profile = ({ profile, username, navigation, getDisconnected }: Props) => {
   return (
     <View>
       <Center paddingTop={10}>
@@ -149,7 +154,7 @@ const Profile = ({ profile, username, navigation }: Props) => {
               size="lg"
               variant="outline"
               onPress={() => {
-                navigation.navigate("Login");
+                getDisconnected(() => navigation.navigate("Login"));
               }}
             >
               Disconnect
@@ -166,4 +171,16 @@ const mapStateToProps = (state: ApplicationState) => ({
   username: state?.auth.user?.username ?? "",
 });
 
-export default connect(mapStateToProps)(Profile);
+const mapActions = {
+  getDisconnected: (callback: () => void) => async (dispatch: Dispatch) => {
+    try {
+      await deleteKey(Constants.storage.AUTH_TOKEN);
+      dispatch(resetAuth());
+      callback();
+    } catch (e) {
+      console.log(e);
+    }
+  },
+};
+
+export default connect(mapStateToProps, mapActions)(Profile);

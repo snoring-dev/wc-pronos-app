@@ -3,6 +3,10 @@ import * as SecureStore from "expo-secure-store";
 
 const emitter = new Emitter();
 
+export async function deleteKey(key: string) {
+  await SecureStore.deleteItemAsync(key);
+}
+
 export async function saveKey(key: string, value: any) {
   await SecureStore.setItemAsync(key, value);
 }

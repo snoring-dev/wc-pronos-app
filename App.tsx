@@ -21,6 +21,9 @@ import EditProfile from "./screens/EditProfile";
 import MatchView from "./screens/MatchView";
 import CommunityView from "./screens/CommunityView";
 import SplashScreen from "./screens/SplashScreen";
+import socketClient from "./utils/Socket";
+
+socketClient.connect();
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();

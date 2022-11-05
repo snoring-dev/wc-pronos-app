@@ -229,6 +229,7 @@ export interface Match {
   right_side: RightSide;
   predictions: SinglePrediction[];
   is_live?: boolean;
+  isOld?: boolean;
 }
 
 export interface MatchsResponse {

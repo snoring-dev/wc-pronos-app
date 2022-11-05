@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Center, Container, ScrollView, View } from "native-base";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import MatchEntry from "../../components/MatchEntry";
@@ -17,8 +17,24 @@ interface OwnProps {
 
 type Props = OwnProps & NativeStackScreenProps<RootStackParamList>;
 
+enum TABS {
+  CURRENT = 1,
+  OLD = 2,
+}
+
 const Matchs = ({ navigation, data, onMatchSelected = () => {} }: Props) => {
-  const list = [...Object.values(data)].map((match: Match) => (
+  const [oldMatches, setOldMatches] = useState<Match[]>([]);
+  const [newMatches, setNewMatches] = useState<Match[]>([]);
+  const [activeTab, setActiveTab] = useState(TABS.CURRENT);
+
+  const switchTab = (index: number) => setActiveTab(index);
+
+  useEffect(() => {
+    setOldMatches([...Object.values(data)].filter((m: Match) => m.isOld));
+    setNewMatches([...Object.values(data)].filter((m: Match) => !m.isOld));
+  }, [data]);
+
+  const newMatchesList = [...newMatches].map((match: Match) => (
     <MatchEntry
       key={`mt-${match.id}`}
       data={match}
@@ -28,15 +44,27 @@ const Matchs = ({ navigation, data, onMatchSelected = () => {} }: Props) => {
       }}
     />
   ));
+
+  const oldMatchesList = [...oldMatches].map((match: Match) => (
+    <MatchEntry
+      key={`mt-${match.id}`}
+      data={match}
+      onClick={() => {
+        onMatchSelected(match);
+        navigation.navigate(Pages.MatchView);
+      }}
+    />
+  ));
+
   return (
     <View paddingBottom="75">
       <Center pb="5">
         <Container>
-          <MatchTabs />
+          <MatchTabs onTabChanged={switchTab} activeTab={activeTab} />
         </Container>
       </Center>
       <ScrollView pt="5" pb={10}>
-        {list}
+        {activeTab === TABS.CURRENT ? newMatchesList : oldMatchesList}
         <View h={50} bgColor="transparent" />
       </ScrollView>
     </View>

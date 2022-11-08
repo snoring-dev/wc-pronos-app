@@ -41,7 +41,7 @@ const Profile = ({ profile, username, navigation, getDisconnected }: Props) => {
               profile?.picture?.formats?.medium?.url ??
               "https://res.cloudinary.com/dfvv4obnz/image/upload/v1665395778/male_man_people_person_avatar_white_tone_icon_159363_1_87f21cf98f.png",
           }}
-          alt={profile?.picture?.alternativeText ?? username}
+          alt={username || 'user_picture'}
           size={150}
         />
         <HStack paddingTop={3}>
@@ -175,6 +175,8 @@ const mapActions = {
   getDisconnected: (callback: () => void) => async (dispatch: Dispatch) => {
     try {
       await deleteKey(Constants.storage.AUTH_TOKEN);
+      await deleteKey(Constants.storage.AUTH_PWD);
+      await deleteKey(Constants.storage.AUTH_USERNAME);
       dispatch(resetAuth());
       callback();
     } catch (e) {

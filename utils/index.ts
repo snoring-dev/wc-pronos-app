@@ -43,3 +43,5 @@ export const makeid = (length: number) => {
   }
   return result;
 };
+
+export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));

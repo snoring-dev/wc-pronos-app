@@ -11,7 +11,7 @@ import { ApplicationState } from "./store";
 import { configureStore } from "./store/configureStore";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Ionicons } from '@expo/vector-icons'; 
+import { Ionicons } from "@expo/vector-icons";
 import FlashMessage from "react-native-flash-message";
 import NewsFeed from "./screens/NewsFeed";
 import Matchs from "./screens/Matchs";
@@ -62,7 +62,11 @@ function MyTabs() {
         options={{
           tabBarLabel: "Community",
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="gamepad-circle" color={color} size={size} />
+            <MaterialCommunityIcons
+              name="gamepad-circle"
+              color={color}
+              size={size}
+            />
           ),
         }}
       />
@@ -110,13 +114,13 @@ export default function App() {
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen
-              name={Pages.Login}
-              component={Login}
+              name={Pages.SplashScreen}
+              component={SplashScreen}
               options={{ headerShown: false }}
             />
             <Stack.Screen
-              name={Pages.SplashScreen}
-              component={SplashScreen}
+              name={Pages.Login}
+              component={Login}
               options={{ headerShown: false }}
             />
             <Stack.Screen

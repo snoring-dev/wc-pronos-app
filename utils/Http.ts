@@ -19,7 +19,6 @@ export const client = axios.create({
 });
 
 export const onSuccess = function (response: any) {
-  console.debug("Request Successful!", response);
   return response.data;
 };
 

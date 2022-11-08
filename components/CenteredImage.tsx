@@ -7,6 +7,8 @@ interface Props {
   alt?: string;
   size?: string;
   isSvg?: boolean;
+  w?: number;
+  h?: number;
 }
 
 const CenteredImage = ({
@@ -14,6 +16,8 @@ const CenteredImage = ({
   alt = "",
   size = "xl",
   isSvg = false,
+  w = 130,
+  h = 130,
 }: Props): React.ReactElement => {
   const wh = size === "m" ? "70%" : "100%";
   return (
@@ -30,8 +34,8 @@ const CenteredImage = ({
       {isSvg && (
         <SvgUri
           uri={source}
-          width="130px"
-          height="130px"
+          width={`${w}px`}
+          height={`${h}px`}
           style={{ marginTop: 15, marginBottom: 15 }}
         />
       )}

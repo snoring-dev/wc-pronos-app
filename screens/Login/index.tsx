@@ -46,9 +46,6 @@ interface LoginComponentProps {
   isLoading: boolean;
   error: FailureState;
   performLogin: any;
-  loadTournamentData: any;
-  loadMatchesData: any;
-  jwt?: string;
 }
 
 type Props = LoginComponentProps & NativeStackScreenProps<RootStackParamList>;
@@ -58,9 +55,6 @@ const Login = ({
   isLoading,
   error,
   performLogin,
-  loadTournamentData,
-  loadMatchesData,
-  jwt = "",
 }: Props) => {
   const [credentials, setCredentials] = useState({
     identifier: "",
@@ -70,15 +64,6 @@ const Login = ({
   const handleInputVal = (field: string, value: string) => {
     setCredentials((current) => ({ ...credentials, [field]: value }));
   };
-
-  useEffect(() => {
-    if (jwt !== "") {
-      navigation.navigate("Home", { screen: "Profile" });
-    }
-
-    loadTournamentData();
-    loadMatchesData();
-  }, []);
 
   const submitCredentials = () => {
     performLogin(credentials, () =>
@@ -188,7 +173,6 @@ const Login = ({
 const mapStateToProps = (state: ApplicationState) => ({
   isLoading: state?.auth?.isLoading,
   error: state?.auth?.failure,
-  jwt: state?.auth?.jwt ?? "",
 });
 
 const mappedActions = {
@@ -203,6 +187,8 @@ const mappedActions = {
         );
         dispatch(setAuthenticatedUser(data?.jwt, data?.user));
         await saveKey(Constants.storage.AUTH_TOKEN, data?.jwt ?? "");
+        await saveKey(Constants.storage.AUTH_USERNAME, auth?.identifier ?? '');
+        await saveKey(Constants.storage.AUTH_PWD, auth?.password ?? '');
         injectAuthTokenToRequest();
         const userProfile: User = await getUserProfile(
           data?.user?.id,
@@ -222,34 +208,6 @@ const mappedActions = {
         );
       }
     },
-  loadTournamentData: () => async (dispatch: Dispatch) => {
-    try {
-      const tournament = await getTournamentData();
-      dispatch(setTournamentData(tournament));
-    } catch (e: any) {
-      const { data } = e;
-      dispatch(
-        setTournamentFailed({
-          status: data?.error?.status ?? 400,
-          message: data?.error?.message ?? "Something went wrong",
-        })
-      );
-    }
-  },
-  loadMatchesData: () => async (dispatch: Dispatch) => {
-    try {
-      const matches = await getMatchsData();
-      dispatch(setMatchesData(matches));
-    } catch (e: any) {
-      const { data } = e;
-      dispatch(
-        setMatchesFailed({
-          status: data?.error?.status ?? 400,
-          message: data?.error?.message ?? "Something went wrong",
-        })
-      );
-    }
-  },
 };
 
 export default connect(mapStateToProps, mappedActions)(Login);

@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Center, HStack, Image, Pressable, Text, View } from "native-base";
 import { Container, LiveLabel } from "./styles";
 import { Match } from "../../store/Matchs/types";
 import format from "date-fns/format";
-import { parseISO } from "date-fns";
+import { addMinutes, isAfter, isBefore, parseISO } from "date-fns";
 
 interface Props {
   data: Match;
@@ -11,11 +11,29 @@ interface Props {
 }
 
 const MatchEntry = ({ data, onClick = () => {} }: Props) => {
-  const { is_live = false } = data;
+  const [isLive, setIsLive] = useState(false);
+
+  useEffect(() => {
+    let interval: any = null;
+    const checkLiveStatus = () => {
+      const dateOfMatch = parseISO(data.played_at);
+      const expectedEndOfMatch = addMinutes(dateOfMatch, 95);
+      const currentTime = new Date();
+
+      setIsLive(
+        isAfter(currentTime, dateOfMatch) &&
+          isBefore(currentTime, expectedEndOfMatch)
+      );
+    };
+    checkLiveStatus();
+    setInterval(() => checkLiveStatus(), 20000);
+    return () => clearInterval(interval);
+  }, [data]);
+
   return (
     <Pressable onPress={onClick} w="100%">
       <Container w="100%">
-        {is_live && (
+        {isLive && (
           <LiveLabel>
             <Text bold fontSize="xs" textTransform="uppercase" color={"white"}>
               live

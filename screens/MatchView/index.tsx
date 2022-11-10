@@ -31,8 +31,9 @@ import {
   setMatchesLoading,
 } from "../../store/Matchs/actions";
 import { setSelectedMatch } from "../../store/UserSelection/actions";
-import LottieView from "lottie-react-native";
 import LoadingView from "../../components/LoadingView";
+import isBefore from "date-fns/isBefore";
+import { parseISO } from "date-fns";
 
 type SPlayer = Player & {
   teamName: string;
@@ -62,6 +63,26 @@ const MatchView = ({
   const [winnerId, setWinnerId] = useState(0);
   const [playerId, setPlayerId] = useState(0);
   const [hasPredicted, setHasPredicted] = useState(false);
+  const [isPredictable, setIsPredictable] = useState(false);
+
+  useEffect(() => {
+    let interval: any = null;
+    try {
+      const checkPredictionAbility = () => {
+        const dateOfMatch = parseISO(selectedMatch?.played_at ?? "");
+        const now = new Date();
+        setIsPredictable(isBefore(now, dateOfMatch));
+      };
+      checkPredictionAbility();
+      interval = setInterval(() => checkPredictionAbility(), 30000);
+    } catch (e) {
+      setIsPredictable(false);
+    }
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [selectedMatch]);
 
   useEffect(() => {
     const pronoIndex: number =
@@ -97,13 +118,18 @@ const MatchView = ({
   };
 
   if (isLoading) {
-    const file = "https://assets3.lottiefiles.com/packages/lf20_kxsd2ytq.json";
     return (
       <SafeAreaView>
         <LoadingView />
       </SafeAreaView>
     );
   }
+
+  const predictionEnabled =
+    isPredictable &&
+    !selectedMatch?.finished &&
+    playerId !== 0 &&
+    winnerId !== 0;
 
   return (
     <SafeAreaView>
@@ -229,14 +255,15 @@ const MatchView = ({
         currentIndex={playerId}
       />
       {/* -------------- Submit button -------------- */}
+
       <Center w="100%" pl="15px" pr="15px" pt="10px">
         <Button
           w="100%"
-          colorScheme="indigo"
+          bgColor={predictionEnabled ? "indigo.500" : "indigo.100"}
           onPress={submitData}
           isLoading={isLoading}
           isLoadingText="Hold on..."
-          disabled={selectedMatch?.finished ?? false}
+          disabled={!predictionEnabled}
         >
           <Text
             color="white"
@@ -244,7 +271,7 @@ const MatchView = ({
             fontWeight="semibold"
             textTransform="uppercase"
           >
-            {hasPredicted ? 'Update your prediction' : 'Send prediction'}
+            {hasPredicted ? "Update your prediction" : "Send prediction"}
           </Text>
         </Button>
       </Center>

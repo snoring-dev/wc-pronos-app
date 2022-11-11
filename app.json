@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "wc-pronos-app",
+    "name": "WC-Pronos",
     "slug": "wc-pronos-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/wc-pronos-icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -20,8 +20,10 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.wc.pronos",
+      "versionCode": 1,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/wc-pronos-icon.png",
         "backgroundColor": "#FFFFFF"
       }
     },

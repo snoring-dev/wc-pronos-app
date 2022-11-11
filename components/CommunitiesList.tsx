@@ -51,7 +51,10 @@ const CommunitiesList = ({
         height="100%"
         data={data}
         renderItem={({ item }) => (
-          <Pressable onPress={() => onListItemClicked(item)}>
+          <Pressable onPress={() => {
+            console.log('item-clicked!', item);
+            onListItemClicked(item);
+          }}>
             <Box
               bgColor="white"
               paddingLeft={2}

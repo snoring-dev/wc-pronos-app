@@ -298,6 +298,7 @@ const mappedActions = {
       dispatch(setCommunitiesData(response.data));
       dispatch(setCommunityLoading(false));
     } catch (e: any) {
+      console.log(e);
       const { data: errorData } = e;
       dispatch(setCommunityLoading(false));
       dispatch(
@@ -318,6 +319,7 @@ const mappedActions = {
         dispatch(setCommunityLoading(false));
         successCallback();
       } catch (e: any) {
+        console.log(e);
         const { data: errorData } = e;
         dispatch(setCommunityLoading(false));
         dispatch(
@@ -349,6 +351,7 @@ const mappedActions = {
         dispatch(setCommunityLoading(false));
         successCallback();
       } catch (e: any) {
+        console.log(e);
         const { data: errorData } = e;
         dispatch(setCommunityLoading(false));
         dispatch(
@@ -381,6 +384,7 @@ const mappedActions = {
         dispatch(setCommunityLoading(false));
         if (nextScreen) nextScreen();
       } catch (e: any) {
+        console.log(e);
         const { data: errorData } = e;
         dispatch(setCommunityLoading(false));
         dispatch(

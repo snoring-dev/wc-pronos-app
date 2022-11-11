@@ -39,6 +39,7 @@
     "react-native-country-picker-modal": "^2.0.0",
     "react-native-dialog": "^9.2.2",
     "react-native-flash-message": "^0.3.1",
+    "react-native-get-random-values": "~1.7.0",
     "react-native-inset-shadow": "^1.0.3",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "~3.10.1",

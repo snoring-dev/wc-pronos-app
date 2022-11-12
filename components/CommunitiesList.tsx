@@ -17,6 +17,7 @@ import React from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { User } from "../store/Auth/types";
 import { Community } from "../store/community/types";
+import { TouchableOpacity } from "react-native";
 
 interface Props {
   marginTop?: number | string;
@@ -24,6 +25,7 @@ interface Props {
   data?: Community[];
   refreshAction?: () => void;
   onListItemClicked?: (community: Community) => void;
+  onCopy?: (code: string) => any;
 }
 
 const CommunitiesList = ({
@@ -32,9 +34,11 @@ const CommunitiesList = ({
   data = [],
   refreshAction = () => {},
   onListItemClicked = () => {},
+  onCopy = () => {},
 }: Props) => {
   const copyToClipboard = (code: string) => {
     Clipboard.setString(code);
+    onCopy(code);
   };
 
   return (
@@ -51,9 +55,11 @@ const CommunitiesList = ({
         height="100%"
         data={data}
         renderItem={({ item }) => (
-          <Pressable onPress={() => {
-            onListItemClicked(item);
-          }}>
+          <Pressable
+            onPress={() => {
+              onListItemClicked(item);
+            }}
+          >
             <Box
               bgColor="white"
               paddingLeft={2}
@@ -100,21 +106,22 @@ const CommunitiesList = ({
                   </Text>
                 </VStack>
                 <Spacer />
-                <Button
-                  borderRadius={100}
-                  backgroundColor="blue.200"
-                  startIcon={
-                    <AntDesign name="addusergroup" size={20} color="white" />
-                  }
-                  onPress={() => {
-                    console.log('Copy =>', item.access_code);
-                    copyToClipboard(item.access_code);
-                    showMessage({
-                      message: "Access code copied to your clipboard",
-                      type: "info",
-                    });
-                  }}
-                />
+                <TouchableOpacity
+                  style={{ width: 45, height: 45, borderRadius: 100 }}
+                >
+                  <Button
+                    startIcon={
+                      <AntDesign name="addusergroup" size={20} color="white" />
+                    }
+                    onPress={() => {
+                      copyToClipboard(item.access_code);
+                      showMessage({
+                        message: "Access code copied to your clipboard",
+                        type: "info",
+                      });
+                    }}
+                  />
+                </TouchableOpacity>
               </HStack>
             </Box>
           </Pressable>

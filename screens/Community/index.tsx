@@ -8,6 +8,7 @@ import {
   HStack,
   Image,
   Input,
+  Stack,
   Text,
   View,
   VStack,
@@ -76,6 +77,7 @@ const Community = ({
 
   const [dialogVisible, setDialogVisible] = useState(false);
   const [accessCode, setAccessCode] = useState("");
+  const [clipboardContent, setClipboardContent] = useState("");
 
   const showAddDialog = () => {
     setDialogVisible(true);
@@ -212,6 +214,21 @@ const Community = ({
           </VStack>
         </Center>
       )}
+      {clipboardContent && (
+        <Center p="10px">
+          <AlertMessage
+            bold
+            status="info"
+            title="Success!"
+            message={(
+              <HStack w="100%">
+                <Text>Join community using this code:</Text>
+                <Text px="2px" fontWeight="bold">{clipboardContent}</Text>
+              </HStack>
+            )}
+          />
+        </Center>
+      )}
       <CommunitiesList
         marginTop="20px"
         width="90%"
@@ -222,6 +239,10 @@ const Community = ({
             navigation.navigate(Pages.CommunityView)
           )
         }
+        onCopy={(code: string) => {
+          setClipboardContent(code);
+          setTimeout(() => setClipboardContent(''), 10000);
+        }}
       />
       <Dialog.Container visible={dialogVisible}>
         <Dialog.Title>Join Pronostic group</Dialog.Title>
@@ -233,7 +254,7 @@ const Community = ({
             alignItems={"center"}
             justifyContent="center"
           >
-            <FormControl>
+            <FormControl w="100%">
               <Input
                 bgColor={"white"}
                 w={"100%"}
@@ -249,7 +270,12 @@ const Community = ({
       </Dialog.Container>
 
       <Center px="10px" position="absolute" bottom="0" left="0" right="0">
-        <HStack px="15px" pb="10px" justifyContent="space-between" alignItems="center">
+        <HStack
+          px="15px"
+          pb="10px"
+          justifyContent="space-between"
+          alignItems="center"
+        >
           <Button
             m="10px"
             w="50%"

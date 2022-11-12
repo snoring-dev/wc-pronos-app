@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import {
   Alert,
   VStack,
@@ -9,11 +9,12 @@ import {
 
 interface Props {
     status: string;
-    message: string;
+    message: string | ReactElement;
     title: string;
+    bold?: boolean;
 }
 
-const AlertMessage = ({ status, title, message }: Props) => {
+const AlertMessage = ({ status, title, message, bold = false }: Props) => {
   return (
     <Alert status={status} shadow={1} maxW="400" w="100%" colorScheme={status}>
       <VStack space={1} flexShrink={1} w="100%">
@@ -25,7 +26,7 @@ const AlertMessage = ({ status, title, message }: Props) => {
         >
           <HStack space={2} flexShrink={1} alignItems="center">
             <Alert.Icon />
-            <Heading fontSize="md" fontWeight="medium" color="coolGray.800">
+            <Heading bold={bold} fontSize="md" fontWeight="medium" color="coolGray.800">
               {title}
             </Heading>
           </HStack>

@@ -70,7 +70,9 @@ const EditProfile = ({
     preferred_team: profile?.preferred_team ?? "",
   });
   const [imageLoading, setImageLoading] = useState(false);
-  const [image, setImage] = useState(profile?.picture?.formats?.medium?.url ?? '');
+  const [image, setImage] = useState(
+    profile?.picture?.formats?.medium?.url ?? ""
+  );
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -124,9 +126,11 @@ const EditProfile = ({
             opacity={imageLoading ? 0.4 : 1}
             borderRadius={100}
             source={{
-              uri: image,
+              uri:
+                profile?.picture?.formats?.medium?.url ??
+                "https://res.cloudinary.com/dfvv4obnz/image/upload/v1665395778/male_man_people_person_avatar_white_tone_icon_159363_1_87f21cf98f.png",
             }}
-            alt={profile?.picture?.alternativeText ?? username}
+            alt={username || 'user_picture'}
             size={150}
           />
           {imageLoading && (
@@ -181,41 +185,43 @@ const EditProfile = ({
               onSelect={pickCountry}
             />
           </FormControl>
-          <FormControl>
-            <FormControl.Label>Your preffered team</FormControl.Label>
-            <Select
-              selectedValue={myTeam}
-              onValueChange={pickPreferredTeam}
-              minWidth="200"
-              accessibilityLabel="Choose Service"
-              placeholder="Choose Service"
-              _selectedItem={{
-                bg: "teal.600",
-                endIcon: <CheckIcon size="5" />,
-              }}
-              mt={1}
-            >
-              {teams.map((team: Team) => {
-                return (
-                  <Select.Item
-                    key={team.country_code}
-                    label={team.name}
-                    value={team.country_code}
-                    leftIcon={
-                      <Image
-                        position="relative"
-                        top={0.5}
-                        width={7}
-                        height={5}
-                        source={{ uri: team.flag }}
-                        alt={team.name}
-                      />
-                    }
-                  />
-                );
-              })}
-            </Select>
-          </FormControl>
+          {!profile.preferred_team && (
+            <FormControl>
+              <FormControl.Label>Your preffered team</FormControl.Label>
+              <Select
+                selectedValue={myTeam}
+                onValueChange={pickPreferredTeam}
+                minWidth="200"
+                accessibilityLabel="Choose Service"
+                placeholder="Choose Service"
+                _selectedItem={{
+                  bg: "teal.600",
+                  endIcon: <CheckIcon size="5" />,
+                }}
+                mt={1}
+              >
+                {teams.map((team: Team) => {
+                  return (
+                    <Select.Item
+                      key={team.country_code}
+                      label={team.name}
+                      value={team.country_code}
+                      leftIcon={
+                        <Image
+                          position="relative"
+                          top={0.5}
+                          width={7}
+                          height={5}
+                          source={{ uri: team.flag }}
+                          alt={team.name}
+                        />
+                      }
+                    />
+                  );
+                })}
+              </Select>
+            </FormControl>
+          )}
           <Button
             mt="2"
             colorScheme="indigo"

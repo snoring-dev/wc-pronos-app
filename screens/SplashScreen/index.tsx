@@ -1,6 +1,6 @@
 import { Center, HStack, Image, Spinner, Text, View } from "native-base";
 import React, { useEffect } from "react";
-import { Dimensions } from "react-native";
+import { Dimensions, ImageBackground } from "react-native";
 import { Foundation } from "@expo/vector-icons";
 import CenteredImage from "../../components/CenteredImage";
 import { connect } from "react-redux";
@@ -24,7 +24,8 @@ import { setAuthenticatedUser, setProfileData } from "../../store/Auth/actions";
 import { injectAuthTokenToRequest } from "../../utils/Http";
 import { User } from "../../store/Auth/types";
 
-const height = Dimensions.get("window").height;
+const screenWidth = Dimensions.get("window").width;
+// const screenHeight = Dimensions.get("window").height;
 
 interface OwnProps {
   isLoading: boolean;
@@ -40,14 +41,18 @@ const SplashScreen = ({ initApp, navigation }: Props) => {
   }, []);
 
   return (
-    <View height={height} position="relative">
-      <Image
-        position="absolute"
-        w="100%"
-        h={height}
-        source={require("../../assets/splash_screen_bg.webp")}
-        alt="world cup splash screen"
-      />
+    <ImageBackground
+      source={require("../../assets/splash_screen_bg.webp")}
+      resizeMode="cover"
+      style={{
+        width: screenWidth,
+        flex: 1,
+        justifyContent: "center",
+        position: 'absolute',
+        bottom: 0,
+        top: 0,
+      }}
+    >
       <Center position="absolute" w="100%" h="100%">
         <CenteredImage
           isSvg
@@ -68,7 +73,7 @@ const SplashScreen = ({ initApp, navigation }: Props) => {
           </Text>
         </HStack>
       </Center>
-    </View>
+    </ImageBackground>
   );
 };
 

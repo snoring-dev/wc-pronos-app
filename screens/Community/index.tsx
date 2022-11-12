@@ -5,16 +5,16 @@ import {
   Center,
   FormControl,
   Heading,
+  HStack,
   Image,
   Input,
-  Menu,
   Text,
   View,
   VStack,
 } from "native-base";
 import { omit } from "ramda";
 import React, { useEffect, useState } from "react";
-import { Modal } from "react-native";
+import { Modal, View as RNView } from "react-native";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { Ionicons } from "@expo/vector-icons";
@@ -212,40 +212,8 @@ const Community = ({
           </VStack>
         </Center>
       )}
-      <Box w="100%" alignItems="center">
-        <Menu
-          w="190"
-          placement="left top"
-          marginRight={2}
-          trigger={(triggerProps) => {
-            return (
-              <Button
-                position="absolute"
-                right="-10"
-                top="2"
-                borderLeftRadius={100}
-                paddingRight="5"
-                height={50}
-                bgColor={"blue.300"}
-                color="white"
-                startIcon={
-                  <Ionicons name="options-outline" size={24} color="white" />
-                }
-                {...triggerProps}
-              />
-            );
-          }}
-        >
-          <Menu.Item onPress={() => setShowModal(true)}>
-            Create community
-          </Menu.Item>
-          <Menu.Item onPress={() => setDialogVisible(true)}>
-            Join community
-          </Menu.Item>
-        </Menu>
-      </Box>
       <CommunitiesList
-        marginTop="20"
+        marginTop="20px"
         width="90%"
         data={data}
         refreshAction={() => fetchCommunities(userId)}
@@ -279,6 +247,29 @@ const Community = ({
         <Dialog.Button label="Cancel" onPress={handleCancel} />
         <Dialog.Button label="Submit" onPress={handleDialogSubmit} />
       </Dialog.Container>
+
+      <Center px="10px" position="absolute" bottom="0" left="0" right="0">
+        <HStack px="15px" pb="10px" justifyContent="space-between" alignItems="center">
+          <Button
+            m="10px"
+            w="50%"
+            variant="subtle"
+            onPress={() => setShowModal(true)}
+            colorScheme={"blue"}
+          >
+            Create Community
+          </Button>
+          <Button
+            m="10px"
+            w="50%"
+            variant="subtle"
+            onPress={() => setDialogVisible(true)}
+            colorScheme={"blue"}
+          >
+            Join Community
+          </Button>
+        </HStack>
+      </Center>
     </View>
   );
 };
@@ -396,5 +387,7 @@ const mappedActions = {
       }
     },
 };
+
+// export default Community;
 
 export default connect(mapStateToProps, mappedActions)(Community);

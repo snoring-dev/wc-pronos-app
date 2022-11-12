@@ -110,7 +110,7 @@ export default function App() {
   const globalStore: Store<ApplicationState> = configureStore();
   return (
     <AppStoreProvider store={globalStore}>
-      <FlashMessage position="top" />
+      <FlashMessage position="bottom" />
       <NativeBaseProvider>
         <NavigationContainer>
           <Stack.Navigator>

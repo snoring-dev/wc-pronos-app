@@ -52,7 +52,6 @@ const CommunitiesList = ({
         data={data}
         renderItem={({ item }) => (
           <Pressable onPress={() => {
-            console.log('item-clicked!', item);
             onListItemClicked(item);
           }}>
             <Box
@@ -108,6 +107,7 @@ const CommunitiesList = ({
                     <AntDesign name="addusergroup" size={20} color="white" />
                   }
                   onPress={() => {
+                    console.log('Copy =>', item.access_code);
                     copyToClipboard(item.access_code);
                     showMessage({
                       message: "Access code copied to your clipboard",

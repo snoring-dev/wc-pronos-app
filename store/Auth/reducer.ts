@@ -57,6 +57,22 @@ function reducer(state: AuthState = initialState, action: AnyAction) {
         failure: { status: 200, message: "OK" },
       }
     }
+    case AuthActionTypes.UPDATE_PROFILE_PICTURE: {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          profile: {
+            ...state.user?.profile,
+            picture: {
+              ...payload,
+            },
+          },
+        },
+        isLoading: false,
+        failure: { status: 200, message: "OK" },
+      }
+    }
     case AuthActionTypes.SET_AUTH_FAILED: {
       return {
         ...state,

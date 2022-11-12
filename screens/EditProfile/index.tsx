@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
 import CountryPicker, {
@@ -7,7 +7,7 @@ import CountryPicker, {
   CountryCode,
 } from "react-native-country-picker-modal";
 import { ApplicationState } from "../../store";
-import { Profile as ProfileType } from "../../store/Auth/types";
+import { Picture, Profile as ProfileType } from "../../store/Auth/types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../utils/Pages";
 import {
@@ -36,6 +36,7 @@ import {
   setAuthenticationFailed,
   setAuthLoading,
   setUpdatedProfileData,
+  setUpdatedProfilePicture,
 } from "../../store/Auth/actions";
 import { Dispatch } from "redux";
 
@@ -46,9 +47,12 @@ interface OwnProps {
   error: FailureState;
   teams?: Team[];
   updateProfile: any;
+  updatePicture: any;
 }
 
 type Props = OwnProps & NativeStackScreenProps<RootStackParamList>;
+const defaultImg =
+  "https://res.cloudinary.com/dfvv4obnz/image/upload/v1665395778/male_man_people_person_avatar_white_tone_icon_159363_1_87f21cf98f.png";
 
 const EditProfile = ({
   profile,
@@ -58,6 +62,7 @@ const EditProfile = ({
   navigation,
   teams = [],
   updateProfile = () => {},
+  updatePicture = () => {},
 }: Props) => {
   const [countryCode, setCountryCode] = useState(
     profile?.country_from?.cca2 ?? "FR"
@@ -70,9 +75,11 @@ const EditProfile = ({
     preferred_team: profile?.preferred_team ?? "",
   });
   const [imageLoading, setImageLoading] = useState(false);
-  const [image, setImage] = useState(
-    profile?.picture?.formats?.medium?.url ?? ""
-  );
+  const [image, setImage] = useState(defaultImg);
+
+  useEffect(() => {
+    setImage(profile?.picture?.url);
+  }, [profile]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -83,15 +90,14 @@ const EditProfile = ({
     });
 
     if (!result.cancelled) {
-      setImageLoading(true);
-      const resp = await sendProfilePicture(username, result.uri);
-
-      if (resp[0].id) {
-        const linking = await linkPictureToProfile(profile.id, resp[0].id);
-        setImage(result.uri);
-      }
-
-      setImageLoading(false);
+      updatePicture(
+        username,
+        profile.id,
+        result.uri,
+        (pictureUri: string) => setImage(pictureUri),
+        () => setImageLoading(true),
+        () => setImageLoading(false)
+      );
     }
   };
 
@@ -126,11 +132,9 @@ const EditProfile = ({
             opacity={imageLoading ? 0.4 : 1}
             borderRadius={100}
             source={{
-              uri:
-                profile?.picture?.formats?.medium?.url ??
-                "https://res.cloudinary.com/dfvv4obnz/image/upload/v1665395778/male_man_people_person_avatar_white_tone_icon_159363_1_87f21cf98f.png",
+              uri: image,
             }}
-            alt={username || 'user_picture'}
+            alt={username || "user_picture"}
             size={150}
           />
           {imageLoading && (
@@ -265,6 +269,30 @@ const mappedActions = {
       );
     }
   },
+  updatePicture:
+    (
+      username: string,
+      profileId: number,
+      uri: string,
+      callback: (result: string) => void,
+      before: () => void,
+      after: () => void
+    ) =>
+    async (dispatch: Dispatch) => {
+      before();
+      try {
+        const resp = await sendProfilePicture(username, uri);
+        if (resp[0].id) {
+          await linkPictureToProfile(profileId, resp[0].id);
+          dispatch(setUpdatedProfilePicture(resp[0]));
+          callback(resp[0]?.url ?? defaultImg);
+        }
+      } catch (e) {
+        console.log(e);
+        callback(defaultImg);
+      }
+      after();
+    },
 };
 
 export default connect(mapStateToProps, mappedActions)(EditProfile);

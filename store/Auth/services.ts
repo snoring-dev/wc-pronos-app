@@ -1,15 +1,19 @@
 import getTime from "date-fns/getTime";
+import { Platform } from "react-native";
 import request from "../../utils/Http";
 
 export const performAuth = async (id: string, pwd: string) => {
-  const resp = await request({
-    url: "/auth/local",
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+  const resp = await request(
+    {
+      url: "/auth/local",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: { identifier: id, password: pwd },
     },
-    data: { identifier: id, password: pwd },
-  }, true);
+    true
+  );
   return resp;
 };
 
@@ -25,12 +29,15 @@ export const getUserProfile = async (id: string, jwt: string) => {
 
 export const sendProfilePicture = async (
   username: string,
-  picturePath: string,
+  picturePath: string
 ) => {
   const formData = new FormData();
   formData.append("files", {
     type: "image/jpg",
-    uri: picturePath.replace("file://", ""),
+    uri:
+      Platform.OS === "ios"
+        ? String(picturePath.replace("file://", ""))
+        : String(picturePath),
     name: `${username}_${getTime(new Date())}`,
   });
 
@@ -48,7 +55,7 @@ export const sendProfilePicture = async (
 
 export const linkPictureToProfile = async (
   profileId: number,
-  pictureId: number,
+  pictureId: number
 ) => {
   const resp = await request({
     url: `/profiles/${profileId}`,
@@ -62,7 +69,10 @@ export const linkPictureToProfile = async (
   return resp;
 };
 
-export const updateProfileData = async (profileId: number, profileData: any) => {
+export const updateProfileData = async (
+  profileId: number,
+  profileData: any
+) => {
   const resp = await request({
     url: `/profiles/${profileId}`,
     method: "PUT",

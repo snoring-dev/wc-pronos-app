@@ -1,5 +1,5 @@
 import { FailureState } from "../../types";
-import { AuthActionTypes, Profile, User } from "./types";
+import { AuthActionTypes, Picture, Profile, User } from "./types";
 
 export const setAuthenticatedUser = (jwt: string, user: User) => {
   return {
@@ -33,6 +33,13 @@ export const setAuthenticationFailed = (failure: FailureState) => ({
   type: AuthActionTypes.SET_AUTH_FAILED,
   payload: failure,
 });
+
+export const setUpdatedProfilePicture = (recentPicture: Picture) => {
+  return {
+    type: AuthActionTypes.UPDATE_PROFILE_PICTURE,
+    payload: recentPicture,
+  };
+};
 
 export const resetAuth = () => ({
   type: AuthActionTypes.RESET_AUTH,

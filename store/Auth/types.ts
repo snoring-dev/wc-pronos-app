@@ -84,5 +84,6 @@ export enum AuthActionTypes {
   SET_AUTH_LOADING = "@wc-app/auth/SET_AUTH_LOADING",
   SET_PROFILE_DATA = "@wc-app/auth/SET_PROFILE_DATA",
   UPDATE_PROFILE_DATA = "@wc-app/auth/UPDATE_PROFILE_DATA",
+  UPDATE_PROFILE_PICTURE = "@wc-app/auth/UPDATE_PROFILE_PICTURE",
   RESET_AUTH = "@wc-app/auth/RESET_AUTH",
 }

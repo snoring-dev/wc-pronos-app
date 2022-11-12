@@ -38,10 +38,10 @@ const Profile = ({ profile, username, navigation, getDisconnected }: Props) => {
           borderRadius={100}
           source={{
             uri:
-              profile?.picture?.formats?.medium?.url ??
+              profile?.picture?.url ??
               "https://res.cloudinary.com/dfvv4obnz/image/upload/v1665395778/male_man_people_person_avatar_white_tone_icon_159363_1_87f21cf98f.png",
           }}
-          alt={username || 'user_picture'}
+          alt={username || "user_picture"}
           size={150}
         />
         <HStack paddingTop={3}>

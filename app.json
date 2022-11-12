@@ -25,7 +25,10 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/wc-pronos-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -37,6 +40,11 @@
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "68de03cb-28c0-4f5e-b5c3-9d6173600274"
+      }
+    }
   }
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { ApplicationState } from "../../store";
 import { Community, UserScoreRanking } from "../../store/community/types";
@@ -31,6 +31,13 @@ const CommunityView = ({ selectedCommunity }: Props) => {
     winning_prize,
     user_score_communities: userRankings,
   } = selectedCommunity;
+  const [sortedRanks, setSortedRanks] = useState<UserScoreRanking[]>([]);
+  useEffect(() => {
+    const copy: UserScoreRanking[] = userRankings ? [...userRankings] : [];
+    copy.sort((r1, r2) => r1.current_ranking - r2.current_ranking);
+    setSortedRanks([...copy]);
+  }, [selectedCommunity]);
+
   return (
     <SafeAreaView>
       <VStack justifyContent="center" alignItems="center">
@@ -137,7 +144,7 @@ const CommunityView = ({ selectedCommunity }: Props) => {
               </Text>
             </View>
           </HStack>
-          {userRankings?.map((ranking: UserScoreRanking, index: number) => {
+          {sortedRanks?.map((ranking: UserScoreRanking, index: number) => {
             return (
               <HStack key={nanoid()}>
                 <View
